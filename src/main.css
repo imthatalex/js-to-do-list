@@ -1,0 +1,19 @@
+#container {
+    height: 100vh;
+    width: 100%;
+    background-color: silver;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+#sideMenu {
+    height: 500px;
+    width: 500px;
+    border: 1px solid red;
+}
+
+.note {
+    border: 1px solid green;
+    width: 60px;
+    height: 60px;
+}
