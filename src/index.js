@@ -1,33 +1,71 @@
 // loaded to be handled by bundler
 import './main.css';
 
-// factories
+// factory functions
 
 // create dom elements
-function createLayout() {
-    console.log('Create Layout');
+function createContainer() {
     const container = document.createElement('div');
     container.setAttribute('id', 'container');
-    // append to the body
+    // created an object (createContainer) and assigned container as a property
+    return { container };
+}
+
+function createNote() {
+    const name = 'Alex';
+    const description = 'First Note';
+
+    const note = document.createElement('div');
+    note.classList.add('note');
+
+    return { note, name, description }
+}
+
+// buttons
+function createNoteButton() {
+    const noteButton = document.createElement('button');
+    noteButton.setAttribute('id', 'noteButton');
+    return noteButton;
+    noteButton.addEventListener('click', renderNote);
+}
+
+
+function renderNote() {
+    console.log('Note Rendered');
+}
+
+
+function createSideMenu() {
+    const sideMenu = document.createElement('div');
+    sideMenu.setAttribute('id', 'sideMenu');
+    return sideMenu;
+}
+
+
+
+// render dom elements
+function renderLayout() {
+    // destructured assignment, assigns container varaiable to property returned from object, names must match
+    const { container } = createContainer();
+    const sideMenu = createSideMenu();
+    const { note, name, description } = createNote();
+
+    container.appendChild(sideMenu);
+    container.appendChild(note);
+
+    trackNotes(note);
+
     document.body.appendChild(container);
+}
 
-    function sideMenu() {
-        console.log('Side Menu Rendered V2');
-        const sideMenu = document.createElement('div');
-        sideMenu.setAttribute('id', 'sideMenu')
-        container.appendChild(sideMenu);
-    }
+renderLayout();
 
 
-    function notes() {
-        console.log('Note Rendered');
-        const note = document.createElement('div');
-        note.classList.add('note');
-        container.appendChild(note);
-    }
 
-    // returns functions/methods
-    return { sideMenu, notes }
+// track notes
+function trackNotes(note) {
+    const notes = [];
+    notes.push(note);
 }
 
 
@@ -39,8 +77,23 @@ function createLayout() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // application functionality
-function addToDoItems() {
+function addNoteDetails() {
 
 }
 
@@ -68,16 +121,6 @@ function saveLocally() {
 }
 
 
-// render application
-(function renderList() {
-    console.log('Render List V5');
-    // // call createLayout and assign the returned functions to variables
-    const { sideMenu, notes } = createLayout();
-    // call the sideMenu and notes functions to add elements to the container
-    sideMenu();
-    notes();
-})();
-
 
 /*
 
@@ -93,4 +136,6 @@ Rules:
 6. npm i date-fns
 7. Use Web Storage API to Save Projects & Notes to Local Storage 
 */
+
+
 
