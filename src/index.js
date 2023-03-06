@@ -3,7 +3,7 @@ import './main.css';
 
 // factory functions
 
-// create dom elements
+// create components
 function createContainer() {
     const container = document.createElement('div');
     container.setAttribute('id', 'container');
@@ -21,54 +21,46 @@ function createNote() {
     return { note, name, description }
 }
 
-// buttons
-function createNoteButton() {
-    const noteButton = document.createElement('button');
-    noteButton.setAttribute('id', 'noteButton');
-    return noteButton;
-    noteButton.addEventListener('click', renderNote);
-}
-
-
-function renderNote() {
-    console.log('Note Rendered');
-}
-
-
 function createSideMenu() {
     const sideMenu = document.createElement('div');
     sideMenu.setAttribute('id', 'sideMenu');
     return sideMenu;
 }
 
+// buttons
+function createNoteButton() {
+    const noteButton = document.createElement('button');
+    noteButton.setAttribute('id', 'noteButton');
+    return noteButton;
+}
 
 
-// render dom elements
-function renderLayout() {
-    // destructured assignment, assigns container varaiable to property returned from object, names must match
+// renders components
+
+function renderComponents() {
     const { container } = createContainer();
     const sideMenu = createSideMenu();
-    const { note, name, description } = createNote();
 
     container.appendChild(sideMenu);
-    container.appendChild(note);
-
-    trackNotes(note);
-
     document.body.appendChild(container);
 }
 
-renderLayout();
+renderComponents();
 
 
 
-// track notes
-function trackNotes(note) {
-    const notes = [];
-    notes.push(note);
+function renderNoteButton() {
+    console.log('Note Button Rendered');
+    const { container } = createContainer();
+    const noteButton = createNoteButton();
+    container.appendChild(noteButton);
+    noteButton.addEventListener('click', renderNote);
 }
 
 
+function renderNote() {
+    console.log('note rendered')
+}
 
 
 
@@ -114,6 +106,12 @@ function scheduleNote() {
 
 }
 
+// track notes
+function trackNotes(note) {
+    const notes = [];
+    notes.push(note);
+}
+
 
 // core functionality
 function saveLocally() {
@@ -136,6 +134,41 @@ Rules:
 6. npm i date-fns
 7. Use Web Storage API to Save Projects & Notes to Local Storage 
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
