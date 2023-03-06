@@ -42,20 +42,24 @@ function createNoteButton() {
     const sideMenu = createSideMenu();
     const noteButton = createNoteButton();
 
+    container.appendChild(sideMenu);
+    sideMenu.appendChild(noteButton);
+    document.body.appendChild(container);
+
+
+    function renderNote() {
+        const { note } = createNote();
+        container.appendChild(note);
+    }
+
     noteButton.addEventListener('click', renderNote);
 
-    container.appendChild(sideMenu);
-    container.appendChild(noteButton);
-
-    document.body.appendChild(container);
 
     console.log('Core Components Rendered');
 })();
 
 
-function renderNote() {
-    console.log('note rendered')
-}
+
 
 
 
