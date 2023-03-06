@@ -12,13 +12,14 @@ function createContainer() {
 }
 
 function createNote() {
-    const name = 'Alex';
-    const description = 'First Note';
+    const name = document.createElement('div');
+    name.textContent = 'Alex';
 
     const note = document.createElement('div');
     note.classList.add('note');
+    note.appendChild(name);
 
-    return { note, name, description }
+    return { note }
 }
 
 function createSideMenu() {
@@ -46,10 +47,15 @@ function createNoteButton() {
     sideMenu.appendChild(noteButton);
     document.body.appendChild(container);
 
+    const notes = [];
 
     function renderNote() {
         const { note } = createNote();
-        container.appendChild(note);
+        notes.push(note);
+        for (let i = 0; i < notes.length; i++) {
+            container.appendChild(notes[i]);
+        }
+        console.log(notes);
     }
 
     noteButton.addEventListener('click', renderNote);
