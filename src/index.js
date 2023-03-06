@@ -31,36 +31,35 @@ function createSideMenu() {
 function createNoteButton() {
     const noteButton = document.createElement('button');
     noteButton.setAttribute('id', 'noteButton');
+    noteButton.textContent = 'Add Note';
     return noteButton;
 }
 
 
 // renders components
-
-function renderComponents() {
+(function renderComponents() {
     const { container } = createContainer();
     const sideMenu = createSideMenu();
+    const noteButton = createNoteButton();
+
+    noteButton.addEventListener('click', renderNote);
 
     container.appendChild(sideMenu);
-    document.body.appendChild(container);
-}
-
-renderComponents();
-
-
-
-function renderNoteButton() {
-    console.log('Note Button Rendered');
-    const { container } = createContainer();
-    const noteButton = createNoteButton();
     container.appendChild(noteButton);
-    noteButton.addEventListener('click', renderNote);
-}
+
+    document.body.appendChild(container);
+
+    console.log('Core Components Rendered');
+})();
 
 
 function renderNote() {
     console.log('note rendered')
 }
+
+
+
+
 
 
 

@@ -1,9 +1,10 @@
+body {
+    background-color: silver;
+}
+
 #container {
     height: 100vh;
     width: 100%;
-    background-color: silver;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
 }
 
 #sideMenu {
