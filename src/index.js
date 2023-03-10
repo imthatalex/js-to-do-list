@@ -21,25 +21,52 @@ function form() {
     return { form, title, submit };
 }
 
+
+function projectList() {
+    let currentProject = '';
+    let allProjects = [];
+    const projectList = document.createElement('div');
+    const addProject = document.createElement('button');
+    addProject.textContent = 'Add New Project';
+    projectList.appendChild(addProject);
+    return { projectList, addProject, currentProject, allProjects }
+}
+
 // render components
 function renderComponents() {
+    console.log('Rendering Components...');
+
     // prevents naming conflicts
     const { container: containerElement } = container();
     const { sideMenu: sideMenuElement } = sideMenu();
     const { form: formElement, title: titleElement, submit: addNewNoteButton } = form();
+    const { projectList: projectListElement, addProject: addProjectButton, currentProject: currentProjectElement, allProjects: allProjectsElement } = projectList();
 
     // append child components and container to body
     sideMenuElement.appendChild(formElement);
+    sideMenuElement.appendChild(projectListElement);
     containerElement.appendChild(sideMenuElement);
     document.body.appendChild(containerElement);
 
-    noteManager(containerElement, addNewNoteButton, titleElement);
+    projectManager(currentProjectElement, allProjectsElement, addProjectButton, containerElement, addNewNoteButton, titleElement);
 }
 
 
+function projectManager(currentProjectElement, allProjectsElement, addProjectButton, containerElement, addNewNoteButton, titleElement) {
+    console.log('Project Manager Invoked');
+    // adds default project to list
+    console.log('Setting Default Project...');
+    allProjectsElement.push({ title: 'default', notes: ['default note'] });
+    // sets current project to default
+    console.log('Setting Current Project...');
+    currentProjectElement = allProjectsElement[0].title;
+    noteManager(currentProjectElement, allProjectsElement, containerElement, addNewNoteButton, titleElement);
+}
+
 // manage notes
-function noteManager(containerElement, addNewNoteButton, titleElement) {
-    const notes = [];
+function noteManager(currentProjectElement, allProjectsElement, containerElement, addNewNoteButton, titleElement) {
+    console.log('Note Manager Invoked');
+    const notes = allProjectsElement;
 
     function renderNotes() {
         // prevent duplicate notes
@@ -48,31 +75,48 @@ function noteManager(containerElement, addNewNoteButton, titleElement) {
 
         // render stored notes
         for (let i = 0; i < notes.length; i++) {
-            const noteElement = document.createElement('div');
-            noteElement.classList.add('square');
-            noteElement.textContent = notes[i].title;
+            if (currentProjectElement == notes[i].title) {
+                for (let j = 0; j < notes[i].notes.length; j++) {
+                    console.log('CurrentProject Accepted, Rendering Notes...');
+                    const noteElement = document.createElement('div');
+                    noteElement.classList.add('square');
+                    noteElement.textContent = notes[i].notes[j];
+                    console.log('Iterated Note', notes[i]);
+                    console.log('Iterated Notes Array', notes[i].notes[i]);
 
-            // delete note
-            const deleteNoteButton = document.createElement('button');
-            deleteNoteButton.textContent = 'Delete';
-            deleteNoteButton.addEventListener('click', () => {
-                notes.splice(notes.indexOf(notes[i]), 1);
-                renderNotes();
-            })
+                    // delete note
+                    const deleteNoteButton = document.createElement('button');
+                    deleteNoteButton.textContent = 'Delete';
+                    deleteNoteButton.addEventListener('click', () => {
+                        console.log('Deleting Note...');
+                        notes[i].notes.splice(notes[i].notes[i].indexOf(notes[i].notes[i]), 1);
+                        console.log('Note Deleted...');
+                        console.log('Re-Rendering...');
+                        renderNotes();
+                    })
 
-            noteElement.appendChild(deleteNoteButton);
-            containerElement.appendChild(noteElement);
+                    noteElement.appendChild(deleteNoteButton);
+                    containerElement.appendChild(noteElement);
+                    console.log('Current Notes', notes);
+                }
+
+            }
         }
+        function addNewNote(e) {
+            console.log('Adding New Note..');
+            // submit form button prevents default
+            e.preventDefault();
+            notes[0].notes.push(titleElement.value);
+            console.log('New Note Added...');
+            console.log('Re-Rendering...')
+            renderNotes();
+        }
+
+        addNewNoteButton.addEventListener('click', addNewNote);
     }
 
-    function addNewNote(e) {
-        // submit form button prevents default
-        e.preventDefault();
-        notes.push({ title: titleElement.value });
-        renderNotes();
-    }
+    renderNotes();
 
-    addNewNoteButton.addEventListener('click', addNewNote);
 }
 
 
