@@ -1,132 +1,82 @@
-// loaded to be handled by bundler
-import './main.css';
-
-// factory functions
-
 // create components
-function createContainer() {
+function container() {
     const container = document.createElement('div');
     container.setAttribute('id', 'container');
-    // created an object (createContainer) and assigned container as a property
     return { container };
 }
 
-function createNote() {
-    const name = document.createElement('div');
-    name.textContent = 'Alex';
-
-    const note = document.createElement('div');
-    note.classList.add('note');
-    note.appendChild(name);
-
-    return { note }
-}
-
-function createSideMenu() {
+function sideMenu() {
     const sideMenu = document.createElement('div');
     sideMenu.setAttribute('id', 'sideMenu');
-    return sideMenu;
+    return { sideMenu };
 }
 
-// buttons
-function createNoteButton() {
-    const noteButton = document.createElement('button');
-    noteButton.setAttribute('id', 'noteButton');
-    noteButton.textContent = 'Add Note';
-    return noteButton;
+function form() {
+    const form = document.createElement('form');
+    const title = document.createElement('input');
+    const submit = document.createElement('button');
+    submit.textContent = 'Add New Note';
+    form.appendChild(title);
+    form.appendChild(submit);
+    return { form, title, submit };
+}
+
+// render components
+function renderComponents() {
+    // prevents naming conflicts
+    const { container: containerElement } = container();
+    const { sideMenu: sideMenuElement } = sideMenu();
+    const { form: formElement, title: titleElement, submit: addNewNoteButton } = form();
+
+    // append child components and container to body
+    sideMenuElement.appendChild(formElement);
+    containerElement.appendChild(sideMenuElement);
+    document.body.appendChild(containerElement);
+
+    noteManager(containerElement, addNewNoteButton, titleElement);
 }
 
 
-// renders components
-(function renderComponents() {
-    const { container } = createContainer();
-    const sideMenu = createSideMenu();
-    const noteButton = createNoteButton();
-
-    container.appendChild(sideMenu);
-    sideMenu.appendChild(noteButton);
-    document.body.appendChild(container);
-
+// manage notes
+function noteManager(containerElement, addNewNoteButton, titleElement) {
     const notes = [];
 
-    function renderNote() {
-        const { note } = createNote();
-        notes.push(note);
+    function renderNotes() {
+        // prevent duplicate notes
+        const noteChilds = document.querySelectorAll('.square');
+        noteChilds.forEach((note) => containerElement.removeChild(note));
+
+        // render stored notes
         for (let i = 0; i < notes.length; i++) {
-            container.appendChild(notes[i]);
+            const noteElement = document.createElement('div');
+            noteElement.classList.add('square');
+            noteElement.textContent = notes[i].title;
+
+            // delete note
+            const deleteNoteButton = document.createElement('button');
+            deleteNoteButton.textContent = 'Delete';
+            deleteNoteButton.addEventListener('click', () => {
+                notes.splice(notes.indexOf(notes[i]), 1);
+                renderNotes();
+            })
+
+            noteElement.appendChild(deleteNoteButton);
+            containerElement.appendChild(noteElement);
         }
-        console.log(notes);
     }
 
-    noteButton.addEventListener('click', renderNote);
+    function addNewNote(e) {
+        // submit form button prevents default
+        e.preventDefault();
+        notes.push({ title: titleElement.value });
+        renderNotes();
+    }
 
-
-    console.log('Core Components Rendered');
-})();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// application functionality
-function addNoteDetails() {
-
-}
-
-function removeToDoItems() {
-
-}
-
-function createNewList() {
-
-}
-
-function removeExistingList() {
-
+    addNewNoteButton.addEventListener('click', addNewNote);
 }
 
 
-function scheduleNote() {
-
-}
-
-// track notes
-function trackNotes(note) {
-    const notes = [];
-    notes.push(note);
-}
-
-
-// core functionality
-function saveLocally() {
-
-}
-
+renderComponents();
 
 
 /*
@@ -142,42 +92,9 @@ Rules:
 5. App Functionalty : View All Projects, View All Notes (Title & Description Only), Change Color of Background to Establish Priority, Edit Note, Delete Note
 6. npm i date-fns
 7. Use Web Storage API to Save Projects & Notes to Local Storage 
+
+T.I.L
+- Composition over Inheritance : Use Smaller Functions (Code Blocks) to Create more Complex Behavior without having to write all the Code in one Large Function.
+- Single Responsibility Principle : Similar Responsibilities with Only One Reason to Change
+- How to Destructure Properties returned from Factory Functions
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
