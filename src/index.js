@@ -1,3 +1,5 @@
+import './main.css';
+
 // create components
 function container() {
     const container = document.createElement('div');
@@ -21,7 +23,6 @@ function form() {
     return { form, title, submit };
 }
 
-
 function projectList() {
     let currentProject = '';
     let allProjects = [];
@@ -43,9 +44,9 @@ function renderComponents() {
     const { projectList: projectListElement, addProject: addProjectButton, currentProject: currentProjectElement, allProjects: allProjectsElement } = projectList();
 
     // append child components and container to body
-    sideMenuElement.appendChild(formElement);
     sideMenuElement.appendChild(projectListElement);
-    containerElement.appendChild(sideMenuElement);
+    containerElement.appendChild(formElement);
+    document.body.appendChild(sideMenuElement);
     document.body.appendChild(containerElement);
 
     projectManager(currentProjectElement, allProjectsElement, addProjectButton, containerElement, addNewNoteButton, titleElement);
@@ -55,18 +56,24 @@ function renderComponents() {
 function projectManager(currentProjectElement, allProjectsElement, addProjectButton, containerElement, addNewNoteButton, titleElement) {
     console.log('Project Manager Invoked');
     // adds default project to list
-    console.log('Setting Default Project...');
-    allProjectsElement.push({ title: 'default', notes: ['default note'] });
+    console.log('Setting Main/Default Project...');
+    allProjectsElement.push({ title: 'Main', notes: ['note one', 'note two', 'note three'] });
     // sets current project to default
     console.log('Setting Current Project...');
     currentProjectElement = allProjectsElement[0].title;
+    // Invoke Note Manager
     noteManager(currentProjectElement, allProjectsElement, containerElement, addNewNoteButton, titleElement);
+
+    addProjectButton.addEventListener('click', () => {
+        console.log('Adding New Project...');
+    })
+
 }
 
 // manage notes
 function noteManager(currentProjectElement, allProjectsElement, containerElement, addNewNoteButton, titleElement) {
     console.log('Note Manager Invoked');
-    const notes = allProjectsElement;
+    const projects = allProjectsElement;
 
     function renderNotes() {
         // prevent duplicate notes
@@ -74,22 +81,23 @@ function noteManager(currentProjectElement, allProjectsElement, containerElement
         noteChilds.forEach((note) => containerElement.removeChild(note));
 
         // render stored notes
-        for (let i = 0; i < notes.length; i++) {
-            if (currentProjectElement == notes[i].title) {
-                for (let j = 0; j < notes[i].notes.length; j++) {
-                    console.log('CurrentProject Accepted, Rendering Notes...');
+        // iterate through projects
+        for (let i = 0; i < projects.length; i++) {
+            console.log(projects.length);
+            if (currentProjectElement == projects[i].title) {
+                // iterate through the notes of currentProject
+                for (let j = 0; j < projects[i].notes.length; j++) {
+                    console.log('CurrentProject Found, Rendering Notes...');
                     const noteElement = document.createElement('div');
                     noteElement.classList.add('square');
-                    noteElement.textContent = notes[i].notes[j];
-                    console.log('Iterated Note', notes[i]);
-                    console.log('Iterated Notes Array', notes[i].notes[i]);
+                    noteElement.textContent = projects[i].notes[j];
 
                     // delete note
                     const deleteNoteButton = document.createElement('button');
                     deleteNoteButton.textContent = 'Delete';
                     deleteNoteButton.addEventListener('click', () => {
                         console.log('Deleting Note...');
-                        notes[i].notes.splice(notes[i].notes[i].indexOf(notes[i].notes[i]), 1);
+                        projects[i].notes.splice(projects[i].notes[j].indexOf(projects[i].notes[j]), 1);
                         console.log('Note Deleted...');
                         console.log('Re-Rendering...');
                         renderNotes();
@@ -97,22 +105,22 @@ function noteManager(currentProjectElement, allProjectsElement, containerElement
 
                     noteElement.appendChild(deleteNoteButton);
                     containerElement.appendChild(noteElement);
-                    console.log('Current Notes', notes);
                 }
-
             }
         }
+        // add new Note
         function addNewNote(e) {
             console.log('Adding New Note..');
             // submit form button prevents default
             e.preventDefault();
-            notes[0].notes.push(titleElement.value);
+            projects[0].notes.push(titleElement.value);
             console.log('New Note Added...');
             console.log('Re-Rendering...')
             renderNotes();
         }
 
         addNewNoteButton.addEventListener('click', addNewNote);
+
     }
 
     renderNotes();
@@ -141,4 +149,5 @@ T.I.L
 - Composition over Inheritance : Use Smaller Functions (Code Blocks) to Create more Complex Behavior without having to write all the Code in one Large Function.
 - Single Responsibility Principle : Similar Responsibilities with Only One Reason to Change
 - How to Destructure Properties returned from Factory Functions
+- Iterating with Nested forLoops
 */

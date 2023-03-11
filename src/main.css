@@ -1,21 +1,25 @@
 body {
     background-color: silver;
-}
-
-#container {
     height: 100vh;
-    width: 100%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 20% 80%;
+    align-items: center;
+    gap: 10px;
 }
 
 #sideMenu {
-    height: 500px;
-    width: 500px;
     border: 1px solid red;
+    height: 50vh;
 }
 
-.note {
+#container {
+    border: 1px solid blue;
+    height: 50vh;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.square {
     border: 1px solid green;
     width: 100px;
     height: 100px;
