@@ -67,7 +67,6 @@ function projectManager(currentProjectElement, allProjectsElement, addProjectBut
     addProjectButton.addEventListener('click', () => {
         console.log('Adding New Project...');
     })
-
 }
 
 // manage notes
@@ -83,7 +82,6 @@ function noteManager(currentProjectElement, allProjectsElement, containerElement
         // render stored notes
         // iterate through projects
         for (let i = 0; i < projects.length; i++) {
-            console.log(projects.length);
             if (currentProjectElement == projects[i].title) {
                 // iterate through the notes of currentProject
                 for (let j = 0; j < projects[i].notes.length; j++) {
@@ -97,7 +95,7 @@ function noteManager(currentProjectElement, allProjectsElement, containerElement
                     deleteNoteButton.textContent = 'Delete';
                     deleteNoteButton.addEventListener('click', () => {
                         console.log('Deleting Note...');
-                        projects[i].notes.splice(projects[i].notes[j].indexOf(projects[i].notes[j]), 1);
+                        projects[i].notes.splice(projects[i].notes.indexOf(projects[i].notes[j]), 1);
                         console.log('Note Deleted...');
                         console.log('Re-Rendering...');
                         renderNotes();
@@ -108,23 +106,22 @@ function noteManager(currentProjectElement, allProjectsElement, containerElement
                 }
             }
         }
-        // add new Note
-        function addNewNote(e) {
-            console.log('Adding New Note..');
-            // submit form button prevents default
-            e.preventDefault();
-            projects[0].notes.push(titleElement.value);
-            console.log('New Note Added...');
-            console.log('Re-Rendering...')
-            renderNotes();
-        }
-
-        addNewNoteButton.addEventListener('click', addNewNote);
-
     }
 
-    renderNotes();
+    // add new Note
+    function addNewNote(e) {
+        console.log('Adding New Note..');
+        // submit form button prevents default
+        e.preventDefault();
+        projects[0].notes.push(titleElement.value);
+        console.log('New Note Added...');
+        console.log('Re-Rendering...')
+        renderNotes();
+    }
 
+    addNewNoteButton.addEventListener('click', addNewNote);
+
+    renderNotes();
 }
 
 
@@ -149,5 +146,12 @@ T.I.L
 - Composition over Inheritance : Use Smaller Functions (Code Blocks) to Create more Complex Behavior without having to write all the Code in one Large Function.
 - Single Responsibility Principle : Similar Responsibilities with Only One Reason to Change
 - How to Destructure Properties returned from Factory Functions
-- Iterating with Nested forLoops
+- Iterating with Nested forLoops : Multiple Arrays Require Multiple Loops
+
+Notes
+- Duplicate Function Calls : Check Inner Functions for Multiple Invocations
+- Array Methods returning Undefined : Check Access (Array or Array Element)
+
+Questions
+- Iterating Through For Loops & Using Nested Conditionals
 */
