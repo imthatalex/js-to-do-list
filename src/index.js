@@ -57,32 +57,59 @@ function renderComponents() {
     document.body.appendChild(sideMenuElement);
     document.body.appendChild(containerElement);
 
-    projectManager(currentProjectElement, allProjectsElement, projectTitleElement, addProjectButton, containerElement, addNewNoteButton, titleElement);
+    projectManager(projectListElement, currentProjectElement, allProjectsElement, projectTitleElement, addProjectButton, containerElement, addNewNoteButton, titleElement);
 }
 
 
-function projectManager(currentProjectElement, allProjectsElement, projectTitleElement, addProjectButton, containerElement, addNewNoteButton, titleElement) {
+function projectManager(projectListElement, currentProjectElement, allProjectsElement, projectTitleElement, addProjectButton, containerElement, addNewNoteButton, titleElement) {
     console.log('Project Manager Invoked');
     // adds default project to list
-    console.log('Setting Main/Default Project...');
     allProjectsElement.push({ title: 'Main', notes: [] });
     // sets current project to default
-    console.log('Setting Current Project...');
     currentProjectElement = allProjectsElement[0].title;
-    // Invoke Note Manager
+    console.log('Setting Current Project to ' + currentProjectElement);
+
+    function renderProjects() {
+        const projectChilds = document.querySelectorAll('.pj');
+        projectChilds.forEach((pj) => projectListElement.removeChild(pj));
+
+        console.log('Rendering Projects...');
+        for (let i = 0; i < allProjectsElement.length; i++) {
+            const projectItem = document.createElement('button');
+            projectItem.textContent = allProjectsElement[i].title;
+            projectItem.setAttribute('id', allProjectsElement[i].title);
+            projectItem.classList.add('pj');
+            projectListElement.appendChild(projectItem);
+
+            projectItem.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Switching Project....');
+                currentProjectElement = projectItem.id;
+                console.log('Project Switched to ' + currentProjectElement);
+                // re-render notes
+                noteManager(currentProjectElement, allProjectsElement, containerElement, addNewNoteButton, titleElement);
+            })
+        }
+    }
+
+    renderProjects();
+
+    // Invoke Initial Note Manager
     noteManager(currentProjectElement, allProjectsElement, containerElement, addNewNoteButton, titleElement);
 
     addProjectButton.addEventListener('click', (e) => {
         e.preventDefault();
         console.log('Adding New Project...');
         allProjectsElement.push({ title: projectTitleElement.value, notes: [] });
-        console.log(allProjectsElement);
+        renderProjects();
+        console.log('New Project Added');
     })
 }
 
 // manage notes
 function noteManager(currentProjectElement, allProjectsElement, containerElement, addNewNoteButton, titleElement) {
     console.log('Note Manager Invoked');
+    console.log('Current Project in Note Manager (Outside of ForLoop): ' + currentProjectElement);
     const projects = allProjectsElement;
 
     function renderNotes() {
@@ -94,9 +121,11 @@ function noteManager(currentProjectElement, allProjectsElement, containerElement
         // iterate through projects
         for (let i = 0; i < projects.length; i++) {
             if (currentProjectElement == projects[i].title) {
+                console.log('Current Project in Note Manager (Inside of ForLoop): ' + currentProjectElement);
                 // iterate through the notes of currentProject
                 for (let j = 0; j < projects[i].notes.length; j++) {
                     console.log('CurrentProject Found, Rendering Notes...');
+                    console.log('Notes in Current Project: ' + projects[i].notes);
                     const noteElement = document.createElement('div');
                     noteElement.classList.add('square');
                     noteElement.textContent = projects[i].notes[j];
@@ -122,10 +151,15 @@ function noteManager(currentProjectElement, allProjectsElement, containerElement
     // add new Note
     function addNewNote(e) {
         console.log('Adding New Note..');
+        console.log('Current Project in New Note Function: ' + currentProjectElement);
         // submit form button prevents default
         e.preventDefault();
-        // replace projects[0] with currentProject
-        projects[0].notes.push(titleElement.value);
+        for (let o = 0; o < allProjectsElement.length; o++) {
+            if (currentProjectElement == allProjectsElement[o].title) {
+                allProjectsElement[o].notes.push(titleElement.value);
+                console.log('Current Project Added to: ' + currentProjectElement);
+            }
+        }
         console.log('New Note Added...');
         console.log('Re-Rendering...')
         renderNotes();
@@ -141,6 +175,7 @@ renderComponents();
 
 
 /*
+
 
 Reminder:
 - S.O.L.I.D Principles
@@ -168,9 +203,8 @@ Questions
 - Iterating Through For Loops & Using Nested Conditionals
 
 
-TO-DO
-- Adding New Projects
+TO-D0
 - Selecting Other Projects
-
+- Delete Existing Project
 
 */
