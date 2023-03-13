@@ -26,11 +26,13 @@ function form() {
 function projectList() {
     let currentProject = '';
     let allProjects = [];
-    const projectList = document.createElement('div');
+    const projectTitle = document.createElement('input');
+    const projectList = document.createElement('form');
     const addProject = document.createElement('button');
+    projectList.appendChild(projectTitle);
     addProject.textContent = 'Add New Project';
     projectList.appendChild(addProject);
-    return { projectList, addProject, currentProject, allProjects }
+    return { projectList, addProject, projectTitle, currentProject, allProjects }
 }
 
 // render components
@@ -41,7 +43,13 @@ function renderComponents() {
     const { container: containerElement } = container();
     const { sideMenu: sideMenuElement } = sideMenu();
     const { form: formElement, title: titleElement, submit: addNewNoteButton } = form();
-    const { projectList: projectListElement, addProject: addProjectButton, currentProject: currentProjectElement, allProjects: allProjectsElement } = projectList();
+    const {
+        projectList: projectListElement,
+        addProject: addProjectButton,
+        projectTitle: projectTitleElement,
+        currentProject: currentProjectElement,
+        allProjects: allProjectsElement,
+    } = projectList();
 
     // append child components and container to body
     sideMenuElement.appendChild(projectListElement);
@@ -49,23 +57,26 @@ function renderComponents() {
     document.body.appendChild(sideMenuElement);
     document.body.appendChild(containerElement);
 
-    projectManager(currentProjectElement, allProjectsElement, addProjectButton, containerElement, addNewNoteButton, titleElement);
+    projectManager(currentProjectElement, allProjectsElement, projectTitleElement, addProjectButton, containerElement, addNewNoteButton, titleElement);
 }
 
 
-function projectManager(currentProjectElement, allProjectsElement, addProjectButton, containerElement, addNewNoteButton, titleElement) {
+function projectManager(currentProjectElement, allProjectsElement, projectTitleElement, addProjectButton, containerElement, addNewNoteButton, titleElement) {
     console.log('Project Manager Invoked');
     // adds default project to list
     console.log('Setting Main/Default Project...');
-    allProjectsElement.push({ title: 'Main', notes: ['note one', 'note two', 'note three'] });
+    allProjectsElement.push({ title: 'Main', notes: [] });
     // sets current project to default
     console.log('Setting Current Project...');
     currentProjectElement = allProjectsElement[0].title;
     // Invoke Note Manager
     noteManager(currentProjectElement, allProjectsElement, containerElement, addNewNoteButton, titleElement);
 
-    addProjectButton.addEventListener('click', () => {
+    addProjectButton.addEventListener('click', (e) => {
+        e.preventDefault();
         console.log('Adding New Project...');
+        allProjectsElement.push({ title: projectTitleElement.value, notes: [] });
+        console.log(allProjectsElement);
     })
 }
 
@@ -113,6 +124,7 @@ function noteManager(currentProjectElement, allProjectsElement, containerElement
         console.log('Adding New Note..');
         // submit form button prevents default
         e.preventDefault();
+        // replace projects[0] with currentProject
         projects[0].notes.push(titleElement.value);
         console.log('New Note Added...');
         console.log('Re-Rendering...')
@@ -154,4 +166,11 @@ Notes
 
 Questions
 - Iterating Through For Loops & Using Nested Conditionals
+
+
+TO-DO
+- Adding New Projects
+- Selecting Other Projects
+
+
 */
