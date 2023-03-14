@@ -12,14 +12,18 @@ body {
     height: 50vh;
 }
 
-#container {
+#notesContainer {
     border: 1px solid blue;
     height: 50vh;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-direction: row;
 }
 
-.square {
+#notesContainer button {
+    height: 30px;
+}
+
+.note {
     border: 1px solid green;
     width: 100px;
     height: 100px;
