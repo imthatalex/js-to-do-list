@@ -97,6 +97,19 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
                 noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject);
             }
             projectElement.addEventListener('click', switchCurrentProject);
+
+
+            const deleteProjectButton = document.createElement('button');
+            deleteProjectButton.textContent = 'Delete';
+            deleteProjectButton.addEventListener('click', () => {
+                console.log('Deleting Project...');
+                projectList.splice(projectList.indexOf(projectList[i]), 1);
+                console.log('Project Deleted...');
+                console.log('Re-Rendering...');
+                renderProjects();
+            })
+
+            projectsFormElement.appendChild(deleteProjectButton);
         }
     }
 
@@ -146,12 +159,24 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     note.classList.add('note');
                     note.textContent = projectList[i].notes[j];
                     notesContainerElement.appendChild(note);
+
+                    const deleteNoteButton = document.createElement('button');
+                    deleteNoteButton.textContent = 'Delete';
+                    deleteNoteButton.addEventListener('click', () => {
+                        console.log('Deleting Note...');
+                        projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[j]), 1);
+                        console.log('Note Deleted...');
+                        console.log('Re-Rendering...');
+                        renderNotes();
+                    })
+
+                    note.appendChild(deleteNoteButton);
+                    notesContainerElement.appendChild(note);
+
                 }
             }
         }
     }
-
-
 
     // render on initial render;
     renderNotes();
