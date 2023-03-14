@@ -71,6 +71,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
     console.log('Current Project on Render: ' + currentProject);
 
 
+
     // render method
     function renderProjects() {
         console.log('Rendering Projects...');
@@ -80,9 +81,17 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             projectsFormElement.removeChild(project);
         })
 
+        const duplicateDeleteProjectNoteButtons = document.querySelectorAll('.deleteProjectButton');
+        duplicateDeleteProjectNoteButtons.forEach((deleteNoteButton) => {
+            projectsFormElement.removeChild(deleteNoteButton);
+        })
+
         for (let i = 0; i < projectList.length; i++) {
             const projectElement = document.createElement('button');
             projectElement.classList.add('project');
+            if (projectList[i].title == 'Main') {
+                projectElement.setAttribute('id', 'main');
+            }
             projectElement.textContent = projectList[i].title;
             projectsFormElement.appendChild(projectElement);
             console.log('Projects Rendered');
@@ -100,13 +109,27 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
 
 
             const deleteProjectButton = document.createElement('button');
+            deleteProjectButton.classList.add('deleteProjectButton');
             deleteProjectButton.textContent = 'Delete';
-            deleteProjectButton.addEventListener('click', () => {
-                console.log('Deleting Project...');
-                projectList.splice(projectList.indexOf(projectList[i]), 1);
-                console.log('Project Deleted...');
-                console.log('Re-Rendering...');
-                renderProjects();
+            deleteProjectButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (projectList[i].title !== 'Main') {
+                    console.log('Deleting Project...');
+                    projectList.splice(projectList.indexOf(projectList[i]), 1);
+                    console.log('Project Deleted...');
+                    console.log('Re-Rendering...');
+                    let deletedProject = projectList.find(project => project == currentProject);
+                    if (deletedProject == undefined) {
+                        currentProject = 'Main';
+                        const mainProject = document.getElementById('main');
+                        mainProject.click();
+                        console.log('Current Project Changed back to Main');
+                    }
+                    renderProjects();
+                }
+                else {
+                    console.log('Cannot Delete Main Project');
+                }
             })
 
             projectsFormElement.appendChild(deleteProjectButton);
@@ -222,6 +245,7 @@ T.I.L
 - How to Destructure Properties returned from Factory Functions
 - Iterating with Nested forLoops : Multiple Arrays Require Multiple Loops
 - When Passing Buttons with Attached Event Listeners as a Variable in Params, it May Cause Duplicate Event Listener Invocations
+- Dealing with State should be Handled in Application Logic not Component Creation
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
