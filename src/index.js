@@ -62,7 +62,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
     let projectList = JSON.parse(localStorage.getItem('projectList'));
     // runs a check to prevent initial state overwriting projectList by checking if it already exists in localStorage, seeing as setItem updates state
     if (!projectList) {
-        projectList = [{ title: 'Main', notes: [] }];
+        projectList = [{ title: 'Today', notes: [] }, { title: 'Week', notes: [] }, { title: 'Month', notes: [] }, { title: 'Year', notes: [] }];
         localStorage.setItem('projectList', JSON.stringify(projectList));
     }
 
@@ -94,8 +94,8 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
         for (let i = 0; i < projectList.length; i++) {
             const projectElement = document.createElement('button');
             projectElement.classList.add('project');
-            if (projectList[i].title == 'Main') {
-                projectElement.setAttribute('id', 'main');
+            if (projectList[i].title == projectList[0].title) {
+                projectElement.setAttribute('id', 'todayProjectList');
             }
             projectElement.textContent = projectList[i].title;
             projectsFormElement.appendChild(projectElement);
@@ -118,7 +118,10 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             deleteProjectButton.textContent = 'Delete';
             deleteProjectButton.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (projectList[i].title !== 'Main') {
+                // extracts the first four elements from projectList and checks if the titles match those being iterated through
+                // some only returns true if just one value in an array satisfies the condition
+                if (!projectList.slice(0, 4).some(p => p.title === projectList[i].title)) {
+                    console.log(projectList[3].title);
                     console.log('Deleting Project...');
                     projectList.splice(projectList.indexOf(projectList[i]), 1);
                     localStorage.setItem('projectList', JSON.stringify(projectList));
@@ -127,14 +130,14 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
                     let deletedProject = projectList.find(project => project == currentProject);
                     if (deletedProject == undefined) {
                         currentProject = 'Main';
-                        const mainProject = document.getElementById('main');
-                        mainProject.click();
+                        const todayProjectList = document.getElementById('todayProjectList');
+                        todayProjectList.click();
                         console.log('Current Project Changed back to Main');
                     }
                     renderProjects();
                 }
                 else {
-                    console.log('Cannot Delete Main Project');
+                    console.log('Cannot Delete Default Project');
                 }
             })
 
@@ -228,10 +231,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
 
 }
-
-
-
-
 /*
 
 
@@ -264,10 +263,11 @@ Notes
 
 Questions
 - Iterating Through For Loops & Using Nested Conditionals
+- Could Have Added Type to Project : Default or Personal
+- Could have Created Separate Project List
 
 TO-D0
-- Add 3 More Default Projects : [Today, Week, Month, Year]
-- Add Separate ProjectList for Personal Projects
+- Design
 - Add Task Completed Button (Delete Button)
 - Add Calendar per Note
 */
