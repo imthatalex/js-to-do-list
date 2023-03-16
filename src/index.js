@@ -327,10 +327,6 @@ Questions
 - Could have Created Separate Project List
 
 TO-D0
-- Design
-- Add Calendar per Note
-
-
-If Equal to Default Projects Do Not Render Add Note Button & Change Project Element to Div
-Add Note to Project & If Date.now == Date, Datel.now + 7 etc....
+- Read, Organize, Comment
+- Add Calendar per Note : Notes Array turns into Object Array with Task & Date Properties
 */
