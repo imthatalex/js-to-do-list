@@ -1,5 +1,16 @@
 import './main.css';
 
+
+
+/*
+
+Locally Stored Values
+- Project List
+- Notes per Project
+
+*/
+
+
 // create components
 function notesContainer() {
     const notesContainer = document.createElement('div');
@@ -58,9 +69,13 @@ renderComponents();
 
 function projectManager(projectsFormElement, projectsInputTitleElement, notesContainerElement, notesTitleInputElement) {
     console.log('Project Manager Invoked');
-    // create a list of projects
-    // set main project
-    const projectList = [{ title: 'Main', notes: [] }];
+    // creates local projectList value
+    let projectList = JSON.parse(localStorage.getItem('projectList'));
+    // runs a check to prevent initial state overwriting projectList by checking if it already exists in localStorage, seeing as setItem updates state
+    if (!projectList) {
+        projectList = [{ title: 'Main', notes: [] }];
+        localStorage.setItem('projectList', JSON.stringify(projectList));
+    }
 
     const addNewProjectButton = document.createElement('button');
     addNewProjectButton.textContent = 'Add New Project';
@@ -80,12 +95,13 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
         duplicateProjects.forEach((project) => {
             projectsFormElement.removeChild(project);
         })
-
+        // prevent duplicate delete project buttons from being added
         const duplicateDeleteProjectNoteButtons = document.querySelectorAll('.deleteProjectButton');
         duplicateDeleteProjectNoteButtons.forEach((deleteNoteButton) => {
             projectsFormElement.removeChild(deleteNoteButton);
         })
 
+        // iterate through projects and render
         for (let i = 0; i < projectList.length; i++) {
             const projectElement = document.createElement('button');
             projectElement.classList.add('project');
@@ -116,6 +132,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
                 if (projectList[i].title !== 'Main') {
                     console.log('Deleting Project...');
                     projectList.splice(projectList.indexOf(projectList[i]), 1);
+                    localStorage.setItem('projectList', JSON.stringify(projectList));
                     console.log('Project Deleted...');
                     console.log('Re-Rendering...');
                     let deletedProject = projectList.find(project => project == currentProject);
@@ -144,6 +161,8 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
     function addNewProject(e) {
         e.preventDefault();
         projectList.push({ title: projectsInputTitleElement.value, notes: [] });
+        // updates local projectList value
+        localStorage.setItem('projectList', JSON.stringify(projectList));
         console.log('New Project Added, List of Projects: ');
         console.log(projectList);
         renderProjects();
@@ -188,6 +207,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     deleteNoteButton.addEventListener('click', () => {
                         console.log('Deleting Note...');
                         projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[j]), 1);
+                        localStorage.setItem('projectList', JSON.stringify(projectList));
                         console.log('Note Deleted...');
                         console.log('Re-Rendering...');
                         renderNotes();
@@ -209,6 +229,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
         for (let i = 0; i < projectList.length; i++) {
             if (projectList[i].title == currentProject) {
                 projectList[i].notes.push(notesTitleInputElement.value);
+                localStorage.setItem('projectList', JSON.stringify(projectList));
                 renderNotes();
             }
         }
@@ -246,6 +267,7 @@ T.I.L
 - Iterating with Nested forLoops : Multiple Arrays Require Multiple Loops
 - When Passing Buttons with Attached Event Listeners as a Variable in Params, it May Cause Duplicate Event Listener Invocations
 - Dealing with State should be Handled in Application Logic not Component Creation
+- Using JSON to Stringify Objects & a Parser to Convert String Data back into an Object
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
