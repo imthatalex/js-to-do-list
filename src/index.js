@@ -80,7 +80,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
     function renderProjects() {
         console.log('Rendering Projects...');
         // prevent duplicate projects from being added
-        const duplicateProjects = document.querySelectorAll('.project');
+        const duplicateProjects = document.querySelectorAll('.projectRow');
         duplicateProjects.forEach((project) => {
             projectsFormElement.removeChild(project);
         })
@@ -92,6 +92,9 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
 
         // iterate through projects and render
         for (let i = 0; i < projectList.length; i++) {
+            const projectRow = document.createElement('div');
+            projectRow.classList.add('projectRow');
+
             let projectElement = '';
             if (!projectList.slice(0, 4).some(p => p.title == projectList[i].title)) {
                 projectElement = document.createElement('button');
@@ -104,7 +107,9 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
                 projectElement.setAttribute('id', 'firstProject');
             }
             projectElement.textContent = projectList[i].title;
-            projectsFormElement.appendChild(projectElement);
+
+            projectRow.appendChild(projectElement);
+            projectsFormElement.appendChild(projectRow);
             console.log('Projects Rendered');
 
             // nested switch project method
@@ -121,7 +126,6 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             const deleteProjectButton = document.createElement('button');
             deleteProjectButton.classList.add('deleteProjectButton');
             deleteProjectButton.textContent = 'Delete';
-
             deleteProjectButton.addEventListener('click', (e) => {
                 // if no projects direct to today
                 e.preventDefault();
