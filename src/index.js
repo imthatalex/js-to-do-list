@@ -92,12 +92,17 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
 
         // iterate through projects and render
         for (let i = 0; i < projectList.length; i++) {
+            const deleteProjectButton = document.createElement('button');
+            deleteProjectButton.classList.add('deleteProjectButton');
+            deleteProjectButton.textContent = 'Delete';
+
             const projectRow = document.createElement('div');
             projectRow.classList.add('projectRow');
 
             let projectElement = '';
             if (!projectList.slice(0, 4).some(p => p.title == projectList[i].title)) {
                 projectElement = document.createElement('button');
+                projectRow.appendChild(deleteProjectButton);
             }
             else {
                 projectElement = document.createElement('h1');
@@ -122,10 +127,6 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
                 noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject);
             }
             projectElement.addEventListener('click', switchCurrentProject);
-
-            const deleteProjectButton = document.createElement('button');
-            deleteProjectButton.classList.add('deleteProjectButton');
-            deleteProjectButton.textContent = 'Delete';
             deleteProjectButton.addEventListener('click', (e) => {
                 // if no projects direct to today
                 e.preventDefault();
@@ -149,7 +150,6 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
                     console.log('Cannot Delete Default Project');
                 }
             })
-            projectsFormElement.appendChild(deleteProjectButton);
         }
     }
 
