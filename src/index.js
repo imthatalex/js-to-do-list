@@ -1,16 +1,5 @@
 import './main.css';
 
-
-
-/*
-
-Locally Stored Values
-- Project List
-- Notes per Project
-
-*/
-
-
 // create components
 function notesContainer() {
     const notesContainer = document.createElement('div');
@@ -243,8 +232,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
 
 
-
-
 /*
 
 
@@ -268,6 +255,8 @@ T.I.L
 - When Passing Buttons with Attached Event Listeners as a Variable in Params, it May Cause Duplicate Event Listener Invocations
 - Dealing with State should be Handled in Application Logic not Component Creation
 - Using JSON to Stringify Objects & a Parser to Convert String Data back into an Object
+- Using LocalStorage to Store Data Locally
+- Update Locally Stored Data
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
@@ -277,5 +266,8 @@ Questions
 - Iterating Through For Loops & Using Nested Conditionals
 
 TO-D0
-- Delete Existing Project
+- Add 3 More Default Projects : [Today, Week, Month, Year]
+- Add Separate ProjectList for Personal Projects
+- Add Task Completed Button (Delete Button)
+- Add Calendar per Note
 */
