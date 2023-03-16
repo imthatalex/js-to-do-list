@@ -1,30 +1,50 @@
 body {
-    background-color: silver;
+    border: 1px solid red;
+    background-color: #e5e5e5;
     height: 100vh;
+    width: 100vw;
+    margin: auto;
     display: grid;
     grid-template-columns: 20% 80%;
-    align-items: center;
-    gap: 10px;
+}
+
+.projectRow {
+    border: 1px solid orange;
+    width: 100%;
+}
+
+.projectRow button {
+    width: 50%;
 }
 
 #sideMenu {
-    border: 1px solid red;
-    height: 50vh;
+    border: 1px solid green;
+}
+
+#sideMenu form {
+    display: flex;
+    flex-direction: column;
+}
+
+#sideMenu form input {
+    height: 100px;
+}
+
+#sideMenu form button {
+    height: 100px;
 }
 
 #notesContainer {
     border: 1px solid blue;
-    height: 50vh;
-    display: flex;
-    flex-direction: row;
+}
+
+#notesContainer input {
+    height: 100px;
+    width: 200px;
 }
 
 #notesContainer button {
-    height: 30px;
+    height: 100px;
+    width: 200px;
 }
 
-.note {
-    border: 1px solid green;
-    width: 100px;
-    height: 100px;
-}
