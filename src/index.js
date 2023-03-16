@@ -43,7 +43,7 @@ function projectsForm() {
     const { notesContainer: notesContainerElement } = notesContainer();
     const { form: notesFormElement, titleInput: notesTitleInputElement } = notesForm();
     const { sideMenu: sideMenuElement } = sideMenu();
-    const { form: projectsFormElement, titleInput: projectsTitleInputElement, displayInputButton: displayInputButtonElement } = projectsForm();
+    const { form: projectsFormElement, titleInput: projectsTitleInputElement, displayInputButton: displayProjectInputButtonElement } = projectsForm();
 
     // append child components and container to body
     sideMenuElement.appendChild(projectsFormElement);
@@ -53,55 +53,82 @@ function projectsForm() {
 
     console.log('Components Rendered');
 
-    projectManager(projectsFormElement, projectsTitleInputElement, notesContainerElement, notesTitleInputElement, displayInputButtonElement);
+    projectManager(projectsFormElement, projectsTitleInputElement, notesContainerElement, notesTitleInputElement, displayProjectInputButtonElement);
 })();
 
 
-function projectManager(projectsFormElement, projectsInputTitleElement, notesContainerElement, notesTitleInputElement, displayInputButtonElement) {
+function projectManager(projectsFormElement, projectsInputTitleElement, notesContainerElement, notesTitleInputElement, displayProjectInputButtonElement) {
     console.log('Project Manager Invoked');
-    // creates local projectList value
+
+    // Add New Project Button 
+    const addNewProjectButton = document.createElement('button');
+    addNewProjectButton.textContent = 'Add';
+    addNewProjectButton.style.display = 'none';
+    projectsFormElement.appendChild(addNewProjectButton);
+
+    // Add New Project Method
+    function addNewProject(e) {
+        e.preventDefault();
+        projectsInputTitleElement.style.display = 'none';
+        addNewProjectButton.style.display = 'none';
+        displayProjectInputButtonElement.style.display = 'block';
+        console.log('Adding New Project...');
+        projectList.push({ title: projectsInputTitleElement.value, notes: [] });
+        // updates local projectList value
+        localStorage.setItem('projectList', JSON.stringify(projectList));
+        console.log('New Project Added, List of Projects: ');
+        renderProjects();
+    }
+    addNewProjectButton.addEventListener('click', addNewProject);
+
+    // Display Input Method
+    function displayInput(e) {
+        e.preventDefault();
+        projectsInputTitleElement.style.display = 'block';
+        addNewProjectButton.style.display = 'block';
+        displayProjectInputButtonElement.style.display = 'none';
+    }
+    displayProjectInputButtonElement.addEventListener('click', displayInput);
+
+    // prevents projectList from being set on re-render to default values
     let projectList = JSON.parse(localStorage.getItem('projectList'));
-    // runs a check to prevent initial state overwriting projectList by checking if it already exists in localStorage, seeing as setItem updates state
+    // if projectList already exists do nothing else render initial values
     if (!projectList) {
+        // store projectList locally
         projectList = [{ title: 'Today', notes: [] }, { title: 'Week', notes: [] }, { title: 'Month', notes: [] }, { title: 'Year', notes: [] }];
         localStorage.setItem('projectList', JSON.stringify(projectList));
     }
 
-    const addNewProjectButton = document.createElement('button');
-    addNewProjectButton.textContent = 'Add';
-    projectsFormElement.appendChild(addNewProjectButton);
-    addNewProjectButton.style.display = 'none';
-
-    // sets currentProject to Main on Initial Render
+    // create instance of currentProject set to null
     let currentProject = '';
-    console.log('Current Project on Render: ' + currentProject);
 
     // render method
     function renderProjects() {
         console.log('Rendering Projects...');
+
         // prevent duplicate projects from being added
         const duplicateProjects = document.querySelectorAll('.projectRow');
         duplicateProjects.forEach((project) => {
             projectsFormElement.removeChild(project);
         })
-        // prevent duplicate delete project buttons from being added
-        const duplicateDeleteProjectNoteButtons = document.querySelectorAll('.deleteProjectButton');
-        duplicateDeleteProjectNoteButtons.forEach((deleteNoteButton) => {
-            projectsFormElement.removeChild(deleteNoteButton);
-        })
 
         // iterate through projects and render
         for (let i = 0; i < projectList.length; i++) {
+            // Add Delete Project Button
             const deleteProjectButton = document.createElement('button');
             deleteProjectButton.classList.add('deleteProjectButton');
             deleteProjectButton.textContent = 'Delete';
 
+            // Create Project Row to Add Projects
             const projectRow = document.createElement('div');
             projectRow.classList.add('projectRow');
 
+            // Render Project
+            // If Project Type is Default, Set to H1 Element else Set to Button Element
             let projectElement = '';
             if (!projectList.slice(0, 4).some(p => p.title == projectList[i].title)) {
                 projectElement = document.createElement('button');
+                // Only Append Delete Button to Non Default Projects
                 projectRow.appendChild(deleteProjectButton);
             }
             else {
@@ -109,40 +136,43 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             }
             projectElement.classList.add('project');
             if (projectList[i].title == projectList[0].title) {
+                // Reference to First Project in List
                 projectElement.setAttribute('id', 'firstProject');
             }
             projectElement.textContent = projectList[i].title;
-
             projectRow.appendChild(projectElement);
             projectsFormElement.appendChild(projectRow);
             console.log('Projects Rendered');
 
-            // nested switch project method
+            // Switch Project Method
             function switchCurrentProject(e) {
                 e.preventDefault();
                 currentProject = projectList[i].title;
                 console.log('Current Project Switched to: ' + currentProject);
-                console.log('Current Projects in Project Manager', projectList);
-                console.log('Passing Updated Project List & Current Project to Note Manager');
                 noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject);
             }
             projectElement.addEventListener('click', switchCurrentProject);
+
+            // Delete Project Method
             deleteProjectButton.addEventListener('click', (e) => {
-                // if no projects direct to today
                 e.preventDefault();
-                // extract first four default elements using slice and run a condition for any of the elements using some
+                // Only Delete Non-Default Projects
                 if (!projectList.slice(0, 4).some(p => p.title == projectList[i].title)) {
                     console.log('Deleting Project...');
                     projectList.splice(projectList.indexOf(projectList[i]), 1);
+                    // Update Local projectList
                     localStorage.setItem('projectList', JSON.stringify(projectList));
                     console.log('Project Deleted...');
                     console.log('Re-Rendering...');
+                    // Search for Deleted Project, if Deleted Project was Currently Selected at Delete, Re-Direct User to firstProject Reference
                     let deletedProject = projectList.find(project => project == currentProject);
                     if (deletedProject == undefined) {
+                        // Switch Current Project to firstProject
                         currentProject = projectList[0].title;
                         const firstProject = document.getElementById('firstProject');
+                        // Change to firstProject
                         firstProject.click();
-                        console.log('Current Project Changed to First Project');
+                        console.log('Current Project Changed to ' + currentProject);
                     }
                     renderProjects();
                 }
@@ -152,62 +182,33 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             })
         }
     }
-
     // invoke on initial render
     renderProjects();
     noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject);
-
-    function displayInput(e) {
-        e.preventDefault();
-        projectsInputTitleElement.style.display = 'block';
-        addNewProjectButton.style.display = 'block';
-        displayInputButtonElement.style.display = 'none';
-    }
-
-    displayInputButtonElement.addEventListener('click', displayInput);
-
-    // add new project method
-    function addNewProject(e) {
-        e.preventDefault();
-        projectsInputTitleElement.style.display = 'none';
-        addNewProjectButton.style.display = 'none';
-        displayInputButtonElement.style.display = 'block';
-        projectList.push({ title: projectsInputTitleElement.value, notes: [] });
-        // updates local projectList value
-        localStorage.setItem('projectList', JSON.stringify(projectList));
-        console.log('New Project Added, List of Projects: ');
-        console.log(projectList);
-        renderProjects();
-    }
-
-    addNewProjectButton.addEventListener('click', addNewProject);
 }
 
 function noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject) {
     console.log('Note Manager Invoked');
     console.log('Current Project in Note Manager: ' + currentProject);
-    console.log('Current Projects in Note Manager', projectList);
+    console.log('Current Projects in Note Manager: ', projectList);
 
+    // Prevent Duplicate Buttons
     const duplicateDisplayInputButtons = document.querySelectorAll('.displayNoteInput');
     duplicateDisplayInputButtons.forEach((displayNoteButton) => {
         notesContainerElement.removeChild(displayNoteButton);
     })
-
-    const displayNoteInputButton = document.createElement('button');
-    displayNoteInputButton.textContent = 'Add New Note';
-    displayNoteInputButton.classList.add('displayNoteInput');
-    notesContainerElement.appendChild(displayNoteInputButton);
-
-
-    if (projectList.slice(0, 4).some(project => project.title == currentProject || currentProject == '')) {
-        displayNoteInputButton.style.display = 'none';
-    }
-
     const duplicateNewNoteButtons = document.querySelectorAll('.newNoteButton');
     duplicateNewNoteButtons.forEach((newNoteButton) => {
         notesContainerElement.removeChild(newNoteButton);
     })
 
+    // Create Display Note Button
+    const displayNoteInputButton = document.createElement('button');
+    displayNoteInputButton.textContent = 'Add New Note';
+    displayNoteInputButton.classList.add('displayNoteInput');
+    notesContainerElement.appendChild(displayNoteInputButton);
+
+    // Create Add New Note Button
     const addNewNoteButton = document.createElement('button');
     addNewNoteButton.classList.add('newNoteButton');
     addNewNoteButton.textContent = 'Add';
@@ -215,69 +216,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     addNewNoteButton.style.display = 'none';
     notesContainerElement.appendChild(addNewNoteButton);
 
-
-
-    function renderNotes() {
-        const duplicateNotes = document.querySelectorAll('.note');
-        duplicateNotes.forEach((note) => {
-            notesContainerElement.removeChild(note);
-        })
-
-        for (let i = 0; i < projectList.length; i++) {
-            if (projectList[i].title == currentProject) {
-                for (let j = 0; j < projectList[i].notes.length; j++) {
-                    const note = document.createElement('div');
-                    note.classList.add('note');
-                    note.textContent = projectList[i].notes[j];
-                    notesContainerElement.appendChild(note);
-
-
-                    const noteCalendar = document.createElement('input');
-                    noteCalendar.setAttribute('type', 'date');
-                    note.appendChild(noteCalendar);
-
-                    function deleteNote() {
-                        console.log('Deleting Note...');
-                        projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[j]), 1);
-                        localStorage.setItem('projectList', JSON.stringify(projectList));
-                        console.log('Note Deleted...');
-                        console.log('Re-Rendering...');
-                        renderNotes();
-                    }
-
-                    const noteCompletedButton = document.createElement('button');
-                    noteCompletedButton.textContent = 'Completed';
-                    noteCompletedButton.addEventListener('click', deleteNote);
-
-
-                    const deleteNoteButton = document.createElement('button');
-                    deleteNoteButton.textContent = 'Delete';
-                    deleteNoteButton.addEventListener('click', deleteNote);
-
-
-                    note.appendChild(deleteNoteButton);
-                    note.appendChild(noteCompletedButton);
-                    notesContainerElement.appendChild(note);
-                }
-            }
-        }
-    }
-
-    // render on initial render;
-    renderNotes();
-
-
-    function displayInput(e) {
-        e.preventDefault();
-        notesTitleInputElement.style.display = 'block';
-        addNewNoteButton.style.display = 'block';
-        displayNoteInputButton.style.display = 'none';
-    }
-
-    displayNoteInputButton.addEventListener('click', displayInput);
-
-
-    // add to notes method
+    // Add New Note Method
     function addNotes() {
         notesTitleInputElement.style.display = 'none';
         addNewNoteButton.style.display = 'none';
@@ -290,6 +229,72 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
             }
         }
     }
+
+    // Display Input Method
+    function displayInput(e) {
+        e.preventDefault();
+        notesTitleInputElement.style.display = 'block';
+        addNewNoteButton.style.display = 'block';
+        displayNoteInputButton.style.display = 'none';
+    }
+    displayNoteInputButton.addEventListener('click', displayInput);
+
+    // Hide Display Note Button if CurrentProject is a Default Project
+    if (projectList.slice(0, 4).some(project => project.title == currentProject || currentProject == '')) {
+        displayNoteInputButton.style.display = 'none';
+    }
+
+    // Render Notes Method
+    function renderNotes() {
+        // Prevent Duplicate Notes
+        const duplicateNotes = document.querySelectorAll('.note');
+        duplicateNotes.forEach((note) => {
+            notesContainerElement.removeChild(note);
+        })
+
+        // Iterate through ProjectNotes and Render
+        for (let i = 0; i < projectList.length; i++) {
+            if (projectList[i].title == currentProject) {
+                for (let j = 0; j < projectList[i].notes.length; j++) {
+                    // Create Note
+                    const note = document.createElement('div');
+                    note.classList.add('note');
+                    note.textContent = projectList[i].notes[j];
+                    notesContainerElement.appendChild(note);
+
+                    // Create Calendar Input
+                    const noteCalendar = document.createElement('input');
+                    noteCalendar.setAttribute('type', 'date');
+                    note.appendChild(noteCalendar);
+
+                    // Delete Note Method
+                    function deleteNote() {
+                        console.log('Deleting Note...');
+                        projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[j]), 1);
+                        localStorage.setItem('projectList', JSON.stringify(projectList));
+                        console.log('Note Deleted...');
+                        console.log('Re-Rendering...');
+                        renderNotes();
+                    }
+
+                    // Create Completed Button
+                    const noteCompletedButton = document.createElement('button');
+                    noteCompletedButton.textContent = 'Completed';
+                    noteCompletedButton.addEventListener('click', deleteNote);
+
+                    // Create Delete Button
+                    const deleteNoteButton = document.createElement('button');
+                    deleteNoteButton.textContent = 'Delete';
+                    deleteNoteButton.addEventListener('click', deleteNote);
+
+                    note.appendChild(deleteNoteButton);
+                    note.appendChild(noteCompletedButton);
+                    notesContainerElement.appendChild(note);
+                }
+            }
+        }
+    }
+    renderNotes();
 }
 /*
 

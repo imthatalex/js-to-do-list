@@ -11,6 +11,9 @@ body {
 .projectRow {
     border: 1px solid orange;
     width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start;
 }
 
 .projectRow button {
@@ -32,6 +35,7 @@ body {
 
 #sideMenu form button {
     height: 100px;
+    cursor: pointer
 }
 
 #notesContainer {
