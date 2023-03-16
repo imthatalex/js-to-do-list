@@ -1,4 +1,7 @@
 import './main.css';
+import { startOfDay, isEqual } from 'date-fns';
+
+
 
 // create components
 function notesContainer() {
@@ -252,9 +255,14 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
             notesContainerElement.removeChild(note);
         })
 
+
         // Iterate through ProjectNotes and Render
         for (let i = 0; i < projectList.length; i++) {
             if (projectList[i].title == currentProject) {
+
+
+
+
                 for (let j = 0; j < projectList[i].notes.length; j++) {
                     // Create Note
                     const note = document.createElement('div');
@@ -266,6 +274,22 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     function updateCalendar() {
                         console.log('Updating Note Date..');
                         projectList[i].notes[j].date = noteCalendar.value;
+
+
+                        // Check Date, Push Note to Default Project based on Date
+                        const noteDate = new Date(projectList[i].notes[j].date + 'T23:59:59');
+                        const today = new Date();
+
+                        if (isEqual(startOfDay(new Date(noteDate.toUTCString())), startOfDay(new Date(today.toUTCString())))) {
+                            console.log('Today!');
+                            projectList[0].notes.push(projectList[i].notes[j]);
+                        }
+
+                        else {
+                            console.log('Date in Note Array: ' + projectList[i].notes[j].date)
+                            console.log('Date in Date(): ' + noteDate);
+                            console.log('Date in Today(): ' + today);
+                        }
                         // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
                         console.log('Date Updated');
