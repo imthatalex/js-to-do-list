@@ -198,6 +198,11 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     displayNoteInputButton.classList.add('displayNoteInput');
     notesContainerElement.appendChild(displayNoteInputButton);
 
+
+    if (projectList.slice(0, 4).some(project => project.title == currentProject || currentProject == '')) {
+        displayNoteInputButton.style.display = 'none';
+    }
+
     const duplicateNewNoteButtons = document.querySelectorAll('.newNoteButton');
     duplicateNewNoteButtons.forEach((newNoteButton) => {
         notesContainerElement.removeChild(newNoteButton);
@@ -209,6 +214,8 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     addNewNoteButton.addEventListener('click', addNotes);
     addNewNoteButton.style.display = 'none';
     notesContainerElement.appendChild(addNewNoteButton);
+
+
 
     function renderNotes() {
         const duplicateNotes = document.querySelectorAll('.note');
