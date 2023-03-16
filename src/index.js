@@ -223,7 +223,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
         displayNoteInputButton.style.display = 'block';
         for (let i = 0; i < projectList.length; i++) {
             if (projectList[i].title == currentProject) {
-                projectList[i].notes.push(notesTitleInputElement.value);
+                projectList[i].notes.push({ task: notesTitleInputElement.value, date: '' });
                 localStorage.setItem('projectList', JSON.stringify(projectList));
                 renderNotes();
             }
@@ -259,23 +259,34 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     // Create Note
                     const note = document.createElement('div');
                     note.classList.add('note');
-                    note.textContent = projectList[i].notes[j];
+                    note.textContent = projectList[i].notes[j].task;
                     notesContainerElement.appendChild(note);
 
-                    // Create Calendar Input
-                    const noteCalendar = document.createElement('input');
-                    noteCalendar.setAttribute('type', 'date');
-                    note.appendChild(noteCalendar);
+                    // Update Calendar Method
+                    function updateCalendar() {
+                        console.log('Updating Note Date..');
+                        projectList[i].notes[j].date = noteCalendar.value;
+                        // Update Local projectList
+                        localStorage.setItem('projectList', JSON.stringify(projectList));
+                        console.log('Date Updated');
+                    }
 
                     // Delete Note Method
                     function deleteNote() {
                         console.log('Deleting Note...');
                         projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[j]), 1);
+                        // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
                         console.log('Note Deleted...');
                         console.log('Re-Rendering...');
                         renderNotes();
                     }
+
+                    // Create Calendar Input
+                    const noteCalendar = document.createElement('input');
+                    noteCalendar.setAttribute('type', 'date');
+                    noteCalendar.addEventListener('change', updateCalendar);
+                    noteCalendar.value = projectList[i].notes[j].date;
 
                     // Create Completed Button
                     const noteCompletedButton = document.createElement('button');
@@ -287,6 +298,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     deleteNoteButton.textContent = 'Delete';
                     deleteNoteButton.addEventListener('click', deleteNote);
 
+                    note.appendChild(noteCalendar);
                     note.appendChild(deleteNoteButton);
                     note.appendChild(noteCompletedButton);
                     notesContainerElement.appendChild(note);
@@ -332,6 +344,5 @@ Questions
 - Could have Created Separate Project List
 
 TO-D0
-- Read, Organize, Comment
 - Add Calendar per Note : Notes Array turns into Object Array with Task & Date Properties
 */
