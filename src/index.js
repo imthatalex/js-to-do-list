@@ -35,7 +35,6 @@ function projectsForm() {
     return { form, titleInput, displayInputButton }
 }
 
-
 // render components
 (function renderComponents() {
     console.log('Rendering Components...');
@@ -262,6 +261,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                 if (defaultProjects.some(project => project.notes.some(note => note.task === projectList[i].notes[k].task)) &&
                     !projectList.slice(4).some(project => project.notes.some(note => note.task === projectList[i].notes[k].task))) {
                     console.log('This Note Only Exists in Default Project');
+                    projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[k]), 1);
                 } else {
                     console.log('This Note Exists in Other Projects or Does Not Exist in Default Projects');
                 }
@@ -391,21 +391,17 @@ T.I.L
 - Using LocalStorage to Store Data Locally
 - Update Locally Stored Data
 - Some Array Method can Help Access Nested Properties to test Conditional Statements
-
-Known Issues
-- Notes Added to Titles with Same Value
+- Slice Method 
+- Splice Method
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
 - Array Methods returning Undefined : Check Access (Array or Array Element)
-
-Questions
-- Iterating Through For Loops & Using Nested Conditionals
 - Could Have Added Type to Project : Default or Personal
-- Could have Created Separate Project List
 
 TO-D0
-- Add Calendar per Note : Notes Array turns into Object Array with Task & Date Properties
+- Read & Clean/Comment Code
 - Delete Notes in Default Project when Notes & Projects are Deleted
+- Prevent Notes being Added to Titles with Same Value
 - Read Date-FNS Docs
 */
