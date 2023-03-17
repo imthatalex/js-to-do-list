@@ -281,19 +281,46 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         projectList[i].notes[j].date = noteCalendar.value;
 
                         // Check Date, Push Note to Default Project based on Date
+                        // Sets Time 'T23..' to prevent Time Zone OffSet
                         const noteDate = new Date(projectList[i].notes[j].date + 'T23:59:59');
                         const today = new Date();
+                        // Passes Today as Reference Point to Current Day
+                        const startOfWeek = new Date(today);
+                        const endOfWeek = new Date(today);
+
+                        // Subtracts Day of the Month from Day of the Week to get the Start & End of the Week
+                        // Example : 17th of the Month - 5th Day of the Week (Friday) = 12th Day + 1 (13th Day)
+                        startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+                        endOfWeek.setDate(today.getDate() - today.getDay() + 7);
 
                         if (isEqual(startOfDay(new Date(noteDate.toUTCString())), startOfDay(new Date(today.toUTCString())))) {
                             console.log('Today!');
                             projectList[0].notes.push(projectList[i].notes[j]);
+                        } else if (noteDate >= startOfWeek && noteDate <= endOfWeek) {
+                            console.log('This week!');
+                            if (projectList[1]) {
+                                projectList[1].notes.push(projectList[i].notes[j]);
+                            } else {
+                                console.error('Unable to add note to this week - projectList[1] is undefined');
+                            }
+                        } else if (noteDate.getMonth() === today.getMonth() && noteDate.getFullYear() === today.getFullYear()) {
+                            console.log('This month!');
+                            if (projectList[2]) {
+                                projectList[2].notes.push(projectList[i].notes[j]);
+                            } else {
+                                console.error('Unable to add note to this month - projectList[2] is undefined');
+                            }
+                        } else if (noteDate.getFullYear() === today.getFullYear()) {
+                            console.log('This year!');
+                            if (projectList[3]) {
+                                projectList[3].notes.push(projectList[i].notes[j]);
+                            } else {
+                                console.error('Unable to add note to this year - projectList[3] is undefined');
+                            }
                         }
 
-                        else {
-                            console.log('Date in Note Array: ' + projectList[i].notes[j].date)
-                            console.log('Date in Date(): ' + noteDate);
-                            console.log('Date in Today(): ' + today);
-                        }
+
+
 
                         // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
