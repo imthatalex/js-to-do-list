@@ -1,10 +1,5 @@
 import './main.css';
 import { startOfDay, isEqual } from 'date-fns';
-<<<<<<< HEAD
-
-
-=======
->>>>>>> mod
 
 // create components
 function notesContainer() {
@@ -229,10 +224,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
         displayNoteInputButton.style.display = 'block';
         for (let i = 0; i < projectList.length; i++) {
             if (projectList[i].title == currentProject) {
-<<<<<<< HEAD
-=======
                 // changed pushed value to object literal
->>>>>>> mod
                 projectList[i].notes.push({ task: notesTitleInputElement.value, date: '' });
                 localStorage.setItem('projectList', JSON.stringify(projectList));
                 renderNotes();
@@ -284,18 +276,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     notesContainerElement.appendChild(note);
 
 
-<<<<<<< HEAD
-                    // If Note Was Deleted & Existed in Default Project, Remove from Default Project
-                    const defaultProjects = projectList.slice(0, 4);
-                    if (defaultProjects.some(project => project.notes.some(note => note.task === projectList[i].notes[j].task)) &&
-                        !projectList.slice(4).some(project => project.notes.some(note => note.task === projectList[i].notes[j].task))) {
-                        console.log('This Note Only Exists in Default Project');
-                    } else {
-                        console.log('This Note Exists in Other Projects or Does Not Exist in Default Projects');
-                    }
-=======
-
->>>>>>> mod
 
                     // Update Calendar Method
                     function updateCalendar() {
@@ -341,22 +321,13 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                             }
                         }
 
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> mod
                         // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
                         console.log('Date Updated');
                     }
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> mod
 
                     // Delete Note Method
                     function deleteNote() {
@@ -374,10 +345,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     noteCalendar.setAttribute('type', 'date');
                     noteCalendar.addEventListener('change', updateCalendar);
                     noteCalendar.value = projectList[i].notes[j].date;
-<<<<<<< HEAD
-
-=======
->>>>>>> mod
                     // Create Completed Button
                     const noteCompletedButton = document.createElement('button');
                     noteCompletedButton.textContent = 'Completed';
@@ -424,12 +391,9 @@ T.I.L
 - Using LocalStorage to Store Data Locally
 - Update Locally Stored Data
 - Some Array Method can Help Access Nested Properties to test Conditional Statements
-<<<<<<< HEAD
-=======
 
 Known Issues
 - Notes Added to Titles with Same Value
->>>>>>> mod
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
