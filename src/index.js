@@ -1,4 +1,5 @@
 import './main.css';
+import { startOfDay, isEqual } from 'date-fns';
 
 // create components
 function notesContainer() {
@@ -223,7 +224,8 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
         displayNoteInputButton.style.display = 'block';
         for (let i = 0; i < projectList.length; i++) {
             if (projectList[i].title == currentProject) {
-                projectList[i].notes.push(notesTitleInputElement.value);
+                // changed pushed value to object literal
+                projectList[i].notes.push({ task: notesTitleInputElement.value, date: '' });
                 localStorage.setItem('projectList', JSON.stringify(projectList));
                 renderNotes();
             }
@@ -254,29 +256,96 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
         // Iterate through ProjectNotes and Render
         for (let i = 0; i < projectList.length; i++) {
+            for (let k = 0; k < projectList[i].notes.length; k++) {
+                // If Note Was Deleted & Existed in Default Project, Remove from Default Project
+                const defaultProjects = projectList.slice(0, 4);
+                if (defaultProjects.some(project => project.notes.some(note => note.task === projectList[i].notes[k].task)) &&
+                    !projectList.slice(4).some(project => project.notes.some(note => note.task === projectList[i].notes[k].task))) {
+                    console.log('This Note Only Exists in Default Project');
+                } else {
+                    console.log('This Note Exists in Other Projects or Does Not Exist in Default Projects');
+                }
+            }
+
             if (projectList[i].title == currentProject) {
                 for (let j = 0; j < projectList[i].notes.length; j++) {
                     // Create Note
                     const note = document.createElement('div');
                     note.classList.add('note');
-                    note.textContent = projectList[i].notes[j];
+                    note.textContent = projectList[i].notes[j].task;
                     notesContainerElement.appendChild(note);
 
-                    // Create Calendar Input
-                    const noteCalendar = document.createElement('input');
-                    noteCalendar.setAttribute('type', 'date');
-                    note.appendChild(noteCalendar);
+
+
+
+                    // Update Calendar Method
+                    function updateCalendar() {
+                        console.log('Updating Note Date..');
+                        projectList[i].notes[j].date = noteCalendar.value;
+
+                        // Check Date, Push Note to Default Project based on Date
+                        // Sets Time 'T23..' to prevent Time Zone OffSet
+                        const noteDate = new Date(projectList[i].notes[j].date + 'T23:59:59');
+                        const today = new Date();
+                        // Passes Today as Reference Point to Current Day
+                        const startOfWeek = new Date(today);
+                        const endOfWeek = new Date(today);
+
+                        // Subtracts Day of the Month from Day of the Week to get the Start & End of the Week
+                        // Example : 17th of the Month - 5th Day of the Week (Friday) = 12th Day + 1 (13th Day)
+                        startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+                        endOfWeek.setDate(today.getDate() - today.getDay() + 7);
+
+                        if (isEqual(startOfDay(new Date(noteDate.toUTCString())), startOfDay(new Date(today.toUTCString())))) {
+                            console.log('Today!');
+                            projectList[0].notes.push(projectList[i].notes[j]);
+                        } else if (noteDate >= startOfWeek && noteDate <= endOfWeek) {
+                            console.log('This week!');
+                            if (projectList[1]) {
+                                projectList[1].notes.push(projectList[i].notes[j]);
+                            } else {
+                                console.error('Unable to add note to this week - projectList[1] is undefined');
+                            }
+                        } else if (noteDate.getMonth() === today.getMonth() && noteDate.getFullYear() === today.getFullYear()) {
+                            console.log('This month!');
+                            if (projectList[2]) {
+                                projectList[2].notes.push(projectList[i].notes[j]);
+                            } else {
+                                console.error('Unable to add note to this month - projectList[2] is undefined');
+                            }
+                        } else if (noteDate.getFullYear() === today.getFullYear()) {
+                            console.log('This year!');
+                            if (projectList[3]) {
+                                projectList[3].notes.push(projectList[i].notes[j]);
+                            } else {
+                                console.error('Unable to add note to this year - projectList[3] is undefined');
+                            }
+                        }
+
+                        // Update Local projectList
+                        localStorage.setItem('projectList', JSON.stringify(projectList));
+                        console.log('Date Updated');
+                    }
+
+
+
 
                     // Delete Note Method
                     function deleteNote() {
                         console.log('Deleting Note...');
                         projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[j]), 1);
+                        // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
                         console.log('Note Deleted...');
                         console.log('Re-Rendering...');
                         renderNotes();
                     }
 
+                    // Create Calendar Input
+                    const noteCalendar = document.createElement('input');
+                    noteCalendar.setAttribute('type', 'date');
+                    noteCalendar.addEventListener('change', updateCalendar);
+                    noteCalendar.value = projectList[i].notes[j].date;
                     // Create Completed Button
                     const noteCompletedButton = document.createElement('button');
                     noteCompletedButton.textContent = 'Completed';
@@ -287,6 +356,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     deleteNoteButton.textContent = 'Delete';
                     deleteNoteButton.addEventListener('click', deleteNote);
 
+                    note.appendChild(noteCalendar);
                     note.appendChild(deleteNoteButton);
                     note.appendChild(noteCompletedButton);
                     notesContainerElement.appendChild(note);
@@ -321,6 +391,10 @@ T.I.L
 - Using JSON to Stringify Objects & a Parser to Convert String Data back into an Object
 - Using LocalStorage to Store Data Locally
 - Update Locally Stored Data
+- Some Array Method can Help Access Nested Properties to test Conditional Statements
+
+Known Issues
+- Notes Added to Titles with Same Value
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
@@ -332,6 +406,7 @@ Questions
 - Could have Created Separate Project List
 
 TO-D0
-- Read, Organize, Comment
 - Add Calendar per Note : Notes Array turns into Object Array with Task & Date Properties
+- Delete Notes in Default Project when Notes & Projects are Deleted
+- Read Date-FNS Docs
 */
