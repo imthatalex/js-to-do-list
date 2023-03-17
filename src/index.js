@@ -275,8 +275,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     note.textContent = projectList[i].notes[j].task;
                     notesContainerElement.appendChild(note);
 
-
-
                     // Update Calendar Method
                     function updateCalendar() {
                         console.log('Updating Note Date..');
@@ -295,6 +293,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         startOfWeek.setDate(today.getDate() - today.getDay() + 1);
                         endOfWeek.setDate(today.getDate() - today.getDay() + 7);
 
+                        // Push Notes to Corresponding Default Project based on Selected Date
                         if (isEqual(startOfDay(new Date(noteDate.toUTCString())), startOfDay(new Date(today.toUTCString())))) {
                             console.log('Today!');
                             projectList[0].notes.push(projectList[i].notes[j]);
@@ -325,9 +324,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         localStorage.setItem('projectList', JSON.stringify(projectList));
                         console.log('Date Updated');
                     }
-
-
-
 
                     // Delete Note Method
                     function deleteNote() {
@@ -391,17 +387,15 @@ T.I.L
 - Using LocalStorage to Store Data Locally
 - Update Locally Stored Data
 - Some Array Method can Help Access Nested Properties to test Conditional Statements
-- Slice Method 
-- Splice Method
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
 - Array Methods returning Undefined : Check Access (Array or Array Element)
 - Could Have Added Type to Project : Default or Personal
+- Slice Method - Returns a Shallow Copy of an Array (Does Not Mutate)
+- Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 TO-D0
-- Read & Clean/Comment Code
-- Delete Notes in Default Project when Notes & Projects are Deleted
 - Prevent Notes being Added to Titles with Same Value
 - Read Date-FNS Docs
 */
