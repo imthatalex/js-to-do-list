@@ -325,10 +325,23 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         console.log('Date Updated');
                     }
 
+
                     // Delete Note Method
                     function deleteNote() {
                         console.log('Deleting Note...');
                         projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[j]), 1);
+
+                        // If Note Was Deleted from Default Project, Delete Note in Other Projects
+                        const defaultProjects = projectList.slice(0, 4);
+                        const otherProjects = projectList.slice(4);
+                        if (defaultProjects.some(project => project == projectList[i])) {
+                            for (let o = 0; o < otherProjects.length; o++) {
+                                console.log(otherProjects[o].notes[j]);
+                                otherProjects[o].notes.splice(otherProjects[o].notes.indexOf(otherProjects[o].notes[j]), 1);
+                            }
+                        }
+
+
                         // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
                         console.log('Note Deleted...');
@@ -396,7 +409,6 @@ Notes
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 TO-D0
-- Prevent Notes being Added to Titles with Same Value
 - If Note Deleted from Default Project, Delete from Other Project
 - Read Date-FNS Docs
 */
