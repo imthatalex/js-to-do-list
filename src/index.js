@@ -255,14 +255,9 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
             notesContainerElement.removeChild(note);
         })
 
-
         // Iterate through ProjectNotes and Render
         for (let i = 0; i < projectList.length; i++) {
             if (projectList[i].title == currentProject) {
-
-
-
-
                 for (let j = 0; j < projectList[i].notes.length; j++) {
                     // Create Note
                     const note = document.createElement('div');
@@ -270,11 +265,20 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     note.textContent = projectList[i].notes[j].task;
                     notesContainerElement.appendChild(note);
 
+
+                    // If Note Was Deleted & Existed in Default Project, Remove from Default Project
+                    const defaultProjects = projectList.slice(0, 4);
+                    if (defaultProjects.some(project => project.notes.some(note => note.task === projectList[i].notes[j].task)) &&
+                        !projectList.slice(4).some(project => project.notes.some(note => note.task === projectList[i].notes[j].task))) {
+                        console.log('This Note Only Exists in Default Project');
+                    } else {
+                        console.log('This Note Exists in Other Projects or Does Not Exist in Default Projects');
+                    }
+
                     // Update Calendar Method
                     function updateCalendar() {
                         console.log('Updating Note Date..');
                         projectList[i].notes[j].date = noteCalendar.value;
-
 
                         // Check Date, Push Note to Default Project based on Date
                         const noteDate = new Date(projectList[i].notes[j].date + 'T23:59:59');
@@ -290,6 +294,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                             console.log('Date in Date(): ' + noteDate);
                             console.log('Date in Today(): ' + today);
                         }
+
                         // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
                         console.log('Date Updated');
@@ -357,6 +362,7 @@ T.I.L
 - Using JSON to Stringify Objects & a Parser to Convert String Data back into an Object
 - Using LocalStorage to Store Data Locally
 - Update Locally Stored Data
+- Some Array Method can Help Access Nested Properties to test Conditional Statements
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
@@ -369,4 +375,6 @@ Questions
 
 TO-D0
 - Add Calendar per Note : Notes Array turns into Object Array with Task & Date Properties
+- Delete Notes in Default Project when Notes & Projects are Deleted
+- Read Date-FNS Docs
 */
