@@ -325,22 +325,26 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         console.log('Date Updated');
                     }
 
-
                     // Delete Note Method
                     function deleteNote() {
                         console.log('Deleting Note...');
-                        projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[j]), 1);
+                        // Reference to Deleted Note
+                        const deletedNote = projectList[i].notes[j];
+                        // J points to Index of Note in ForLoop
+                        projectList[i].notes.splice(j, 1);
 
                         // If Note Was Deleted from Default Project, Delete Note in Other Projects
                         const defaultProjects = projectList.slice(0, 4);
                         const otherProjects = projectList.slice(4);
-                        if (defaultProjects.some(project => project == projectList[i])) {
+                        // If Note was Deleted from a Default Project
+                        if (defaultProjects.some(project => project.id === projectList[i].id)) {
                             for (let o = 0; o < otherProjects.length; o++) {
-                                console.log(otherProjects[o].notes[j]);
-                                otherProjects[o].notes.splice(otherProjects[o].notes.indexOf(otherProjects[o].notes[j]), 1);
+                                const index = otherProjects[o].notes.indexOf(deletedNote);
+                                if (index !== -1) {
+                                    otherProjects[o].notes.splice(index, 1);
+                                }
                             }
                         }
-
 
                         // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
@@ -400,6 +404,8 @@ T.I.L
 - Using LocalStorage to Store Data Locally
 - Update Locally Stored Data
 - Some Array Method can Help Access Nested Properties to test Conditional Statements
+- Using an Array Length as an ID Reference Point
+- Creating an Index for Splice Array Methods using a Reference Point
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
@@ -409,6 +415,5 @@ Notes
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 TO-D0
-- If Note Deleted from Default Project, Delete from Other Project
 - Read Date-FNS Docs
 */
