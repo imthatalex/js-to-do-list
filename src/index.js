@@ -126,7 +126,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             // Render Project
             // If Project Type is Default, Set to H1 Element else Set to Button Element
             let projectElement = '';
-            if (!projectList.slice(0, 4).some(p => p.title == projectList[i].title)) {
+            if (!projectList.slice(0, 4).some(p => p.id == projectList[i].id)) {
                 projectElement = document.createElement('button');
                 // Only Append Delete Button to Non Default Projects
                 projectRow.appendChild(deleteProjectButton);
@@ -278,7 +278,31 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     // Update Calendar Method
                     function updateCalendar() {
                         console.log('Updating Note Date..');
+
+                        // Reference Previous Note with Old Date
+                        let previousNote = projectList[i].notes[j];
+                        if (previousNote.date !== noteCalendar.value && previousNote.date !== null && previousNote.date !== undefined && previousNote.date !== '') {
+                            console.log('Replacing Date...Deleting Note...');
+                            // Delete Previous Note if Date Changed
+                            const defaultProjects = projectList.slice(0, 4);
+                            console.log('Default Projects: ', defaultProjects);
+                            for (let m = 0; m < defaultProjects.length; m++) {
+                                const notes = defaultProjects[m].notes;
+                                for (let n = 0; n < notes.length; n++) {
+                                    if (notes[n] === previousNote) {
+                                        notes.splice(n, 1);
+                                        console.log('Replaced & Deleted Note');
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Set New Note
+                        console.log('Setting Date...');
                         projectList[i].notes[j].date = noteCalendar.value;
+                        console.log('Date Set');
+
 
                         // Check Date, Push Note to Default Project based on Date
                         // Sets Time 'T23..' to prevent Time Zone OffSet
@@ -405,7 +429,8 @@ T.I.L
 - Update Locally Stored Data
 - Some Array Method can Help Access Nested Properties to test Conditional Statements
 - Using an Array Length as an ID Reference Point
-- Creating an Index for Splice Array Methods using a Reference Point
+- Creating an Index for Splice Array Methods using the index of a forLoop as a Reference Point
+- IndexOf Method returns -1 when Element Not Found; Can Cause Unintended Behavior; Example : Removing Last Element from within a Splice Method
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
@@ -415,5 +440,11 @@ Notes
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 TO-D0
-- Read Date-FNS Docs
+- Test for Bugs
+- Begin Thinking About Design Layout
+
+Noticed
+- Click on Default Project Row to Switch instead of H1
+- As Time Passes, Notes should automatically be pushed to corresonding Default Project
+- Date Changed, Delete Old Note
 */
