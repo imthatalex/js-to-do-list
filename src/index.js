@@ -247,6 +247,47 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
     // Render Notes Method
     function renderNotes() {
+        // Relocate Notes based on Date
+        function updateDefaultProjectNotesByDate() {
+            const todayProjectNotes = projectList[0].notes;
+            const weekProjectNotes = projectList[1].notes;
+            const monthProjectNotes = projectList[2].notes;
+            const yearProjectNotes = projectList[3].notes;
+
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            const endOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+            endOfWeek.setDate(today.getDate() - today.getDay() + 7);
+
+            for (let o = weekProjectNotes.length - 1; o >= 0; o--) {
+                const noteDate = new Date(weekProjectNotes[o].date + 'T23:59:59');
+                if (noteDate && isEqual(startOfDay(new Date(noteDate.toUTCString())), startOfDay(new Date(today.toUTCString())))) {
+                    todayProjectNotes.push(weekProjectNotes[o]);
+                    weekProjectNotes.splice(o, 1);
+                }
+            }
+
+            for (let k = monthProjectNotes.length - 1; k >= 0; k--) {
+                const noteDate = new Date(monthProjectNotes[k].date);
+                if (noteDate && noteDate >= startOfWeek && noteDate <= endOfWeek) {
+                    weekProjectNotes.push(monthProjectNotes[k]);
+                    monthProjectNotes.splice(k, 1);
+                }
+            }
+
+            for (let i = yearProjectNotes.length - 1; i >= 0; i--) {
+                const noteDate = new Date(yearProjectNotes[i].date);
+                if (noteDate && noteDate.getMonth() === currentMonth && noteDate.getFullYear() === currentYear) {
+                    monthProjectNotes.push(yearProjectNotes[i]);
+                    yearProjectNotes.splice(i, 1);
+                }
+            }
+        }
+        updateDefaultProjectNotesByDate();
+
         // Prevent Duplicate Notes
         const duplicateNotes = document.querySelectorAll('.note');
         duplicateNotes.forEach((note) => {
@@ -282,6 +323,8 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         // Reference Previous Note with Old Date
                         let previousNote = projectList[i].notes[j];
                         if (previousNote.date !== noteCalendar.value && previousNote.date !== null && previousNote.date !== undefined && previousNote.date !== '') {
+                            console.log('Previous Note', previousNote);
+                            console.log('Note Value', noteCalendar.value);
                             console.log('Replacing Date...Deleting Note...');
                             // Delete Previous Note if Date Changed
                             const defaultProjects = projectList.slice(0, 4);
@@ -302,7 +345,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         console.log('Setting Date...');
                         projectList[i].notes[j].date = noteCalendar.value;
                         console.log('Date Set');
-
 
                         // Check Date, Push Note to Default Project based on Date
                         // Sets Time 'T23..' to prevent Time Zone OffSet
