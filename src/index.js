@@ -335,6 +335,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                                 const notes = defaultProjects[m].notes;
                                 for (let n = 0; n < notes.length; n++) {
                                     if (notes[n] === previousNote) {
+                                        // Deletes Old Note from Default Projects
                                         notes.splice(n, 1);
                                         console.log('Replaced & Deleted Note');
                                         break;
@@ -345,12 +346,20 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
                         // Set New Note
                         console.log('Setting Date...');
-                        projectList[i].notes[j].date = noteCalendar.value;
+                        if (projectList[i].notes[j]) {
+                            projectList[i].notes[j].date = noteCalendar.value;
+                        }
                         console.log('Date Set');
 
                         // Check Date, Push Note to Default Project based on Date
                         // Sets Time 'T23..' to prevent Time Zone OffSet
-                        const noteDate = new Date(projectList[i].notes[j].date + 'T23:59:59');
+                        let noteDate = '';
+                        if (projectList[i].notes[j]) {
+                            noteDate = new Date(projectList[i].notes[j].date + 'T23:59:59');
+                        }
+                        else {
+                            noteDate = new Date(noteCalendar.value + 'T23:59:59');
+                        }
                         const today = new Date();
                         // Passes Today as Reference Point to Current Day
                         const startOfWeek = new Date(today);
@@ -364,7 +373,12 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         // Push Notes to Corresponding Default Project based on Selected Date
                         if (isEqual(startOfDay(new Date(noteDate.toUTCString())), startOfDay(new Date(today.toUTCString())))) {
                             console.log('Scheduled for Today');
-                            projectList[0].notes.push(projectList[i].notes[j]);
+                            if (projectList[i].notes[j]) {
+                                projectList[0].notes.push(projectList[i].notes[j]);
+                            }
+                            else {
+                                projectList[0].notes.push({ task: previousNote.task, date: noteCalendar.value });
+                            }
                         } else if (noteDate >= startOfWeek && noteDate <= endOfWeek) {
                             console.log('Scheduled for This Week');
                             if (projectList[1]) {
@@ -484,7 +498,7 @@ Notes
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 TO-D0
-- Change Note Dates in Default Projects
+- Change Note Dates in Default Projects : Default Project Note Being Deleted on Date Change
 - Click on Default Project Row to Switch instead of H1
 - Begin Thinking About Design Layout
 */
