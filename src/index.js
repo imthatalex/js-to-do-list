@@ -267,6 +267,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                 if (noteDate && isEqual(startOfDay(new Date(noteDate.toUTCString())), startOfDay(new Date(today.toUTCString())))) {
                     todayProjectNotes.push(weekProjectNotes[o]);
                     weekProjectNotes.splice(o, 1);
+                    localStorage.setItem('projectList', JSON.stringify(projectList));
                 }
             }
 
@@ -275,6 +276,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                 if (noteDate && noteDate >= startOfWeek && noteDate <= endOfWeek) {
                     weekProjectNotes.push(monthProjectNotes[k]);
                     monthProjectNotes.splice(k, 1);
+                    localStorage.setItem('projectList', JSON.stringify(projectList));
                 }
             }
 
@@ -283,6 +285,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                 if (noteDate && noteDate.getMonth() === currentMonth && noteDate.getFullYear() === currentYear) {
                     monthProjectNotes.push(yearProjectNotes[i]);
                     yearProjectNotes.splice(i, 1);
+                    localStorage.setItem('projectList', JSON.stringify(projectList));
                 }
             }
         }
@@ -328,7 +331,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                             console.log('Replacing Date...Deleting Note...');
                             // Delete Previous Note if Date Changed
                             const defaultProjects = projectList.slice(0, 4);
-                            console.log('Default Projects: ', defaultProjects);
                             for (let m = 0; m < defaultProjects.length; m++) {
                                 const notes = defaultProjects[m].notes;
                                 for (let n = 0; n < notes.length; n++) {
@@ -482,11 +484,7 @@ Notes
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 TO-D0
-- Test for Bugs
-- Begin Thinking About Design Layout
-
-Noticed
+- Change Note Dates in Default Projects
 - Click on Default Project Row to Switch instead of H1
-- As Time Passes, Notes should automatically be pushed to corresonding Default Project
-- Date Changed, Delete Old Note
+- Begin Thinking About Design Layout
 */
