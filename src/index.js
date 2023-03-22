@@ -100,7 +100,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
     }
 
     // create instance of currentProject set to null
-    let currentProject;
+    let currentProject = 0;
 
     // render method
     function renderProjects() {
