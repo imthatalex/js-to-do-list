@@ -540,7 +540,10 @@ Notes
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 TO-D0
-- Change Note Dates in Default Projects : Default Project Note Being Deleted on Date Change
+- Read, Organize, and Comment
+- Add All Notes to an All Projects Default Project - Iterate through all Projects & Push Notes, Re-Renders
+- Sort Notes in AllNotesDefaultProject by Date
+- Add Edit Note Action - RenderNotes Edit Button, Change Note Titles in All Default Projects
 - Click on Default Project Row to Switch instead of H1
 - Begin Thinking About Design Layout
 */
