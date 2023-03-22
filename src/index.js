@@ -324,7 +324,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         console.log('Updating Note Date..');
 
                         // Reference Previous Note with Old Date
-                        // Change Date for Other Projects when Date in Default Project Changed
                         // Default Project Note not Deleting Immediately when Date Changed
                         let previousNote = projectList[i].notes[j];
                         if (previousNote.date !== noteCalendar.value && previousNote.date !== null && previousNote.date !== undefined && previousNote.date !== '') {
@@ -361,9 +360,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                                 }
                             }
                         }
-
-
-
 
                         // Set New Note
                         console.log('Setting Date...');
@@ -440,6 +436,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
                         // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
+                        renderNotes();
                         console.log('Date Updated');
                     }
 
