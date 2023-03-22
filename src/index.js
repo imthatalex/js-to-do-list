@@ -324,6 +324,8 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         console.log('Updating Note Date..');
 
                         // Reference Previous Note with Old Date
+                        // Change Date for Other Projects when Date in Default Project Changed
+                        // Default Project Note not Deleting Immediately when Date Changed
                         let previousNote = projectList[i].notes[j];
                         if (previousNote.date !== noteCalendar.value && previousNote.date !== null && previousNote.date !== undefined && previousNote.date !== '') {
                             console.log('Previous Note', previousNote);
@@ -338,11 +340,30 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                                         // Deletes Old Note from Default Projects
                                         notes.splice(n, 1);
                                         console.log('Replaced & Deleted Note');
-                                        break;
+                                    }
+                                }
+                            }
+                            // Replace Other Projects Note Date
+                            const otherProjects = projectList.slice(4);
+                            for (let t = 0; t < otherProjects.length; t++) {
+                                const notes = otherProjects[t].notes;
+                                for (let f = 0; f < notes.length; f++) {
+                                    console.log('Changing Note Date in Other Project...');
+                                    if (notes[f].date === previousNote.date) {
+                                        notes[f].date = noteCalendar.value;
+                                        console.log('Note Changed in Other Project');
+                                    }
+                                    else {
+                                        console.log(notes[f]);
+                                        console.log(previousNote);
+                                        console.log(noteCalendar.value);
                                     }
                                 }
                             }
                         }
+
+
+
 
                         // Set New Note
                         console.log('Setting Date...');
@@ -382,21 +403,36 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         } else if (noteDate >= startOfWeek && noteDate <= endOfWeek) {
                             console.log('Scheduled for This Week');
                             if (projectList[1]) {
-                                projectList[1].notes.push(projectList[i].notes[j]);
+                                if (projectList[i].notes[j]) {
+                                    projectList[1].notes.push(projectList[i].notes[j]);
+                                }
+                                else {
+                                    projectList[1].notes.push({ task: previousNote.task, date: noteCalendar.value });
+                                }
                             } else {
                                 console.error('Unable to add note to this week - projectList[1] is undefined');
                             }
                         } else if (noteDate.getMonth() === today.getMonth() && noteDate.getFullYear() === today.getFullYear()) {
                             console.log('Scheduled for This Month');
                             if (projectList[2]) {
-                                projectList[2].notes.push(projectList[i].notes[j]);
+                                if (projectList[i].notes[j]) {
+                                    projectList[2].notes.push(projectList[i].notes[j]);
+                                }
+                                else {
+                                    projectList[2].notes.push({ task: previousNote.task, date: noteCalendar.value });
+                                }
                             } else {
                                 console.error('Unable to add note to this month - projectList[2] is undefined');
                             }
                         } else if (noteDate.getFullYear() === today.getFullYear()) {
                             console.log('Scheduled for This Year');
                             if (projectList[3]) {
-                                projectList[3].notes.push(projectList[i].notes[j]);
+                                if (projectList[i].notes[j]) {
+                                    projectList[3].notes.push(projectList[i].notes[j]);
+                                }
+                                else {
+                                    projectList[3].notes.push({ task: previousNote.task, date: noteCalendar.value });
+                                }
                             } else {
                                 console.error('Unable to add note to this year - projectList[3] is undefined');
                             }
@@ -489,6 +525,7 @@ T.I.L
 - Using an Array Length as an ID Reference Point
 - Creating an Index for Splice Array Methods using the index of a forLoop as a Reference Point
 - IndexOf Method returns -1 when Element Not Found; Can Cause Unintended Behavior; Example : Removing Last Element from within a Splice Method
+- When Removing Elements using a forLoop it's Best Practice to Decrease the Iterator not Increase
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
