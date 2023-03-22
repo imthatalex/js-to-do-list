@@ -99,7 +99,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
         localStorage.setItem('projectList', JSON.stringify(projectList));
     }
 
-    // create instance of currentProject set to null
+    // create instance of currentProject set to today default project
     let currentProject = 0;
 
     // render method
@@ -454,16 +454,24 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         // If Note was Deleted from a Default Project
                         if (defaultProjects.some(project => project.id === projectList[i].id)) {
                             for (let o = 0; o < otherProjects.length; o++) {
-                                const index = otherProjects[o].notes.indexOf(deletedNote);
-                                if (index !== -1) {
-                                    otherProjects[o].notes.splice(index, 1);
+                                console.log('Deleting Note from Other Projects...');
+                                if (otherProjects[o].notes[j].date === deletedNote.date) {
+                                    otherProjects[o].notes.splice(otherProjects[o].notes.indexOf(otherProjects[o].notes[j]), 1);
+                                    console.log('Note Deleted from Other Projects');
+                                }
+                                else {
+                                    console.log(otherProjects[o].notes);
+                                    console.log(deletedNote);
+                                    console.log(otherProjects[o].notes.indexOf(deletedNote));
+                                    console.log(otherProjects[o].notes[j].date);
+                                    console.log(deletedNote.date);
                                 }
                             }
                         }
 
                         // Update Local projectList
                         localStorage.setItem('projectList', JSON.stringify(projectList));
-                        console.log('Note Deleted...');
+                        console.log('Note Deleted');
                         console.log('Re-Rendering...');
                         renderNotes();
                     }
