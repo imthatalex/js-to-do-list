@@ -157,7 +157,8 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             deleteProjectButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 // Only Delete Non-Default Projects
-                if (!projectList.slice(0, 4).some(p => p.id == projectList[i].id)) {
+                const otherProjects = projectList.slice(4);
+                if (otherProjects.some(project => project.id == projectList[i].id)) {
                     console.log('Deleting Project...');
                     projectList.splice(projectList.indexOf(projectList[i]), 1);
                     // Update Local projectList
@@ -448,7 +449,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         }
 
                         // Delete Previous Note from Default Projects if Date Changed
-                        // SHOULD ONLY RUN IF NOTE EXISTS IN DEFAULT PROJECT
                         function deletePreviousNote() {
                             const defaultProjects = projectList.slice(0, 4);
                             for (let g = 0; g < defaultProjects.length; g++) {
@@ -575,6 +575,7 @@ Deleting Project, Does Not Delete All Notes from That Project in Default Project
 
 
 TO-D0
+- Read, Organize, Comment 
 - Add All Notes to an All Projects Default Project - Iterate through all Projects & Push Notes, Re-Renders
 - Sort Notes in AllNotesDefaultProject by Date
 - Add Edit Note Action - RenderNotes Edit Button, Change Note Titles in All Default Projects
