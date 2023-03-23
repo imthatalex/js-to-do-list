@@ -148,6 +148,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             function switchCurrentProject(e) {
                 e.preventDefault();
                 currentProject = projectList[i].id;
+                console.log(projectList[currentProject]);
                 noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject);
             }
             projectElement.addEventListener('click', switchCurrentProject);
@@ -332,19 +333,19 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                             previousNote.date !== null &&
                             previousNote.date !== undefined &&
                             previousNote.date !== '') {
-                            console.log('Replacing Date...Deleting Note from Default Project...');
+                            console.log('Deleting Note from Default Project...');
                             const defaultProjects = projectList.slice(0, 4);
                             for (let m = 0; m < defaultProjects.length; m++) {
                                 const notes = defaultProjects[m].notes;
                                 for (let n = 0; n < notes.length; n++) {
-                                    if (notes[n].projectNoteID == previousNote.projectNoteID && notes[n].noteID == previousNote.noteID) {
+                                    if (notes[n].projectNoteID === previousNote.projectNoteID && notes[n].noteID === previousNote.noteID && notes[n].date === previousNote.date && notes[n].date !== noteCalendar.value) {
                                         // Deletes Old Note from Default Projects
                                         console.log('Note [N] ID:', notes[n].noteID);
                                         console.log('Previous Note ID ', previousNote.noteID);
                                         console.log('Note [N] Project ID:', notes[n].projectNoteID);
                                         console.log('Previous Note Project ID ', previousNote.projectNoteID);
                                         notes.splice(n, 1);
-                                        console.log('Replaced & Deleted Note');
+                                        console.log('Deleted Note from Default Project');
                                     }
                                     else {
                                         console.log('Note IDs Did Not Match when Deleting from Default Projects');
@@ -369,7 +370,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                             const notes = otherProjects[t].notes;
                             for (let f = 0; f < notes.length; f++) {
                                 console.log('Changing Note Date in Other Project...');
-                                if (notes[f].projectNoteID == previousNote.projectNoteID && notes[f].noteID == previousNote.noteID && notes[f].date != noteCalendar.value) {
+                                if (notes[f].projectNoteID === previousNote.projectNoteID && notes[f].noteID === previousNote.noteID && notes[f].date !== noteCalendar.value) {
                                     notes[f].date = noteCalendar.value;
                                     console.log('Note Changed in Other Project');
                                     console.log('Note [F] ID ', notes[f].noteID);
@@ -419,20 +420,24 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                             if (projectList[i].notes[j]) {
                                 projectList[0].notes.push(projectList[i].notes[j]);
                                 console.log('Scheduled for Today with Existing Note');
+                                console.log('Note Appended : ', projectList[i].notes[j]);
                             }
                             else {
                                 projectList[0].notes.push({ task: previousNote.task, date: noteCalendar.value, projectNoteID: previousNote.projectNoteID, noteID: previousNote.noteID });
                                 console.log('Scheduled for Today without Existing Note');
+                                console.log('Note Appended : ', { task: previousNote.task, date: noteCalendar.value, projectNoteID: previousNote.projectNoteID, noteID: previousNote.noteID });
                             }
                         } else if (noteDate >= startOfWeek && noteDate <= endOfWeek) {
                             if (projectList[1]) {
                                 if (projectList[i].notes[j]) {
                                     projectList[1].notes.push(projectList[i].notes[j]);
                                     console.log('Scheduled for This Week with Existing Note');
+                                    console.log('Note Appended : ', projectList[i].notes[j]);
                                 }
                                 else {
                                     projectList[1].notes.push({ task: previousNote.task, date: noteCalendar.value, projectNoteID: previousNote.projectNoteID, noteID: previousNote.noteID });
                                     console.log('Scheduled for This Week without Existing Note');
+                                    console.log('Note Appended : ', { task: previousNote.task, date: noteCalendar.value, projectNoteID: previousNote.projectNoteID, noteID: previousNote.noteID });
                                 }
                             } else {
                                 console.error('Unable to add note to this week - projectList[1] is undefined');
@@ -442,10 +447,12 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                                 if (projectList[i].notes[j]) {
                                     projectList[2].notes.push(projectList[i].notes[j]);
                                     console.log('Scheduled for This Month with Existing Note');
+                                    console.log('Note Appended : ', projectList[i].notes[j]);
                                 }
                                 else {
                                     projectList[2].notes.push({ task: previousNote.task, date: noteCalendar.value, projectNoteID: previousNote.projectNoteID, noteID: previousNote.noteID });
                                     console.log('Scheduled for This Month without Existing Note');
+                                    console.log('Note Appended : ', { task: previousNote.task, date: noteCalendar.value, projectNoteID: previousNote.projectNoteID, noteID: previousNote.noteID });
                                 }
                             } else {
                                 console.error('Unable to add note to this month - projectList[2] is undefined');
@@ -455,10 +462,12 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                                 if (projectList[i].notes[j]) {
                                     projectList[3].notes.push(projectList[i].notes[j]);
                                     console.log('Scheduled for This Year with Existing Note');
+                                    console.log('Note Appended : ', projectList[i].notes[j]);
                                 }
                                 else {
                                     projectList[3].notes.push({ task: previousNote.task, date: noteCalendar.value, projectNoteID: previousNote.projectNoteID, noteID: previousNote.noteID });
                                     console.log('Scheduled for This Year without Existing Note');
+                                    console.log('Note Appended : ', { task: previousNote.task, date: noteCalendar.value, projectNoteID: previousNote.projectNoteID, noteID: previousNote.noteID });
                                 }
                             } else {
                                 console.error('Unable to add note to this year - projectList[3] is undefined');
@@ -562,12 +571,12 @@ Notes
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 BUGS
-- On Date Change
-Date of Other Notes Not Changing when Changed from Default Project => 
-ID is Not Being Set Correctly when Date is Changed and Pushed to Default Project =>
-Duplicate Notes Appended when Date Changed from Other Project (Previous Note !== Current Note) => 
+- On Date Change in Default Project
+Multiple Notes with Same Date, If Top Note is Selected, Top Note is Deleted, Other Note Date (Note Below Top Note) Changed, Other Note Pushed to Default Project, Previous Note Point to Other Note =>
 Deleting Project, Does Not Delete All Notes from That Project in Default Projects
 - Input Stays on Display if No Note was Added
+
+
 
 
 TO-D0
