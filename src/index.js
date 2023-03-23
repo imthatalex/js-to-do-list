@@ -245,7 +245,8 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
     // Render Notes Method
     function renderNotes() {
-        // Relocate Notes based on Date
+
+        // Relocate Notes based on Date as Time Passes
         function updateDefaultProjectNotesByDate() {
             const todayProjectNotes = projectList[0].notes;
             const weekProjectNotes = projectList[1].notes;
@@ -288,6 +289,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
             }
         }
         updateDefaultProjectNotesByDate();
+
 
         // Prevent Duplicate Notes
         const duplicateNotes = document.querySelectorAll('.note');
@@ -549,7 +551,18 @@ Notes
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
 
 BUGS
-- When Changing Dates Multiple Times, Notes get Deleted & Other Notes Date Change
+- On Date Change
+Date of Other Notes Not Changing when Changed from Default Project => 
+Duplicate Notes Appended when Date Changed from Other Project (UnEqual Dates) => 
+Deleting Project, Does Not Delete All Notes from That Project in Default Projects
+- Input Stays on Display if No Note was Added
+
+
+TESTS
+- Previous Note is Not Deleted when Changed from Other Projects : 
+- Previous Note is Not Deleted when Changed from Default Projects :
+- Date of Other Notes Not Changing when Changing from Other Projects : 
+
 
 TO-D0
 - Add All Notes to an All Projects Default Project - Iterate through all Projects & Push Notes, Re-Renders
