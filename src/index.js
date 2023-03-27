@@ -304,7 +304,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
             for (let k = 0; k < projectList[i].notes.length; k++) {
                 const defaultProjects = projectList.slice(0, 5);
                 if (defaultProjects.some(project => project.notes.some(note => note.task === projectList[i].notes[k].task)) &&
-                    !projectList.slice(4).some(project => project.notes.some(note => note.task === projectList[i].notes[k].task))) {
+                    !projectList.slice(5).some(project => project.notes.some(note => note.task === projectList[i].notes[k].task))) {
                     projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[k]), 1);
                     console.log('Note in Other, Deleted in Default');
                 }
