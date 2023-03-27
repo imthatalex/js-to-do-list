@@ -544,6 +544,7 @@ Notes
 - Could Have Added Type to Project : Default or Personal
 - Slice Method - Returns a Shallow Copy of an Array (Does Not Mutate)
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
+- Invoke Delete Methods After Render/Set Methods
 
 BUGS
 - Input Stays on Display if No Note was Added
