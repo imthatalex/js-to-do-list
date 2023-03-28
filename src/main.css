@@ -1,7 +1,7 @@
 body {
     border: 1px solid red;
     background-color: #e5e5e5;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     margin: auto;
     display: grid;

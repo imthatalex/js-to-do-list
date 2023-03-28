@@ -113,7 +113,6 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
 
 
 
-
         // prevent duplicate projects from being added
         const duplicateProjects = document.querySelectorAll('.projectRow');
         duplicateProjects.forEach((project) => {
@@ -319,17 +318,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                 }
             }
 
-            // Sort Notes By Date
-            function compareNotesByDate(note1, note2) {
-                // convert the Date Strings to Date Objects
-                var date1 = new Date(note1.date);
-                var date2 = new Date(note2.date);
-
-                // subtract the Dates and return the Result
-                return date1 - date2;
-            }
-            projectList[i].notes.sort(compareNotesByDate);
-
 
             // Render Notes for Current Project
             if (projectList[i].id == currentProject) {
@@ -468,13 +456,13 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                                 const index = defaultProjects[g].notes.findIndex(note => note == previousNote);
                                 if (index !== -1) {
                                     defaultProjects[g].notes.splice(index, 1);
-                                    break;
                                 }
                             }
                         }
                         if (previousDate !== noteCalendar.value && previousDate !== '') {
                             deletePreviousNote();
                             console.log('Previous Note Deleted');
+                            console.log('Previous Note: ', previousNote);
                         }
                         else {
                             console.log('Previous Date is Equal to Calendar Value, Previous Note Deletion Failed');
