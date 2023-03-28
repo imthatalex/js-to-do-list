@@ -110,6 +110,8 @@ function projectManager(projectsFormElement, projectsTitleInputElement, notesCon
 
     // Render Projects
     function renderProjects() {
+
+
         // prevent duplicate projects rows from being added
         const duplicateProjectRows = document.querySelectorAll('.projectRow');
         duplicateProjectRows.forEach((project) => {
@@ -130,6 +132,7 @@ function projectManager(projectsFormElement, projectsTitleInputElement, notesCon
             if (projectList[i].id == 0) {
                 projectElement.setAttribute('id', 'allProjects');
             }
+
 
             // Switch Project Event
             function switchProject(e) {
@@ -177,8 +180,19 @@ function projectManager(projectsFormElement, projectsTitleInputElement, notesCon
 function noteManager(notesContainerElement, notesTaskInputElement, projectList, currentProject) {
     console.log('Note Manager Invoked');
 
+    // Prevent Duplicate Buttons
+    const duplicateAddNoteButtons = document.querySelectorAll('.addNoteButton');
+    duplicateAddNoteButtons.forEach((addNoteButton) => {
+        notesContainerElement.removeChild(addNoteButton);
+    })
+    const duplicateNewNoteButtons = document.querySelectorAll('.createNewNoteButton');
+    duplicateNewNoteButtons.forEach((newNoteButton) => {
+        notesContainerElement.removeChild(newNoteButton);
+    })
+
     // Create Add Note Button
     const addNoteButton = document.createElement('button');
+    addNoteButton.classList.add('addNoteButton');
     addNoteButton.textContent = 'Add Note';
     addNoteButton.style.display = 'none';
     addNoteButton.addEventListener('click', addNote);
@@ -187,7 +201,8 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
     // Create Add Note Event
     function addNote(e) {
         e.preventDefault();
-        projectList[currentProject].notes.push({ task: notesTaskInputElement.value, date: '' });
+        projectList[currentProject].notes.push({ task: notesTaskInputElement.value, date: '', projectID: projectList.length, noteID: projectList[currentProject].notes.length });
+        console.log(projectList[currentProject].notes);
         renderNotes();
         localStorage.setItem('projectList', JSON.stringify(projectList));
         notesTaskInputElement.value = '';
@@ -198,6 +213,7 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
 
     // Create New Note Button
     const addNewNoteButton = document.createElement('button');
+    addNewNoteButton.classList.add('createNewNoteButton');
     addNewNoteButton.textContent = 'Create New Note';
     addNewNoteButton.addEventListener('click', createNewNote);
     notesContainerElement.appendChild(addNewNoteButton);
@@ -220,13 +236,15 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
         // Remove Deleted Notes from Default Projects
         for (let j = 0; j < personalProjects.length; j++) {
             for (let k = 0; k < personalProjects[j].notes.length; k++) {
-                defaultProjects.notes.some((note) => {
-                    if (note !== personalProjects[j].notes[k]) {
-                        defaultProjects.splice(defaultProjects.notes.indexOf(note), 1);
-                    }
-                })
+                if (defaultProjects.some(
+                    note => note.id !== personalProjects[j].notes[k].noteID &&
+                        note.projectID !== personalProjects[j].notes[k].projectID
+                )) {
+                    defaultProjects.splice(defaultProjects.notes.indexOf(personalProjects[j].notes[k]), 1);
+                }
             }
         }
+
 
         // Prevent Duplicate Notes
         const duplicateNotes = document.querySelectorAll('.note');
@@ -236,13 +254,17 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
 
 
         // Render Notes for Current Projects
-        for (let i = 0; i < projectList[currentProject].length; i++) {
-            for (let o = 0; o < projectList[currentProject].notes.length; o++) {
-                // Create Note
-                const note = document.createElement('div');
-                note.classList.add('note');
-                note.textContent = projectList[currentProject].notes[o].task;
-                notesContainer.appendChild(note);
+        for (let i = 0; i < projectList.length; i++) {
+            if (projectList[i].id == currentProject) {
+                console.log('Rendering Notes...');
+                for (let o = 0; o < projectList[i].notes.length; o++) {
+                    // Create Note
+                    const note = document.createElement('div');
+                    note.classList.add('note');
+                    note.textContent = projectList[currentProject].notes[o].task;
+                    notesContainerElement.appendChild(note);
+                }
+                console.log('Notes Rendered');
             }
         }
     }
