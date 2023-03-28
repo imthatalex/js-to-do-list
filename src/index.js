@@ -564,7 +564,6 @@ Notes
 - Invoke Delete Methods After Render/Set Methods
 
 BUGS
-- Deleting Projects Does Not Delete All Notes
 - Input Stays on Display if No Note was Added
 
 TO-D0
