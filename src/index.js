@@ -256,7 +256,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
     // Render Notes Method
     function renderNotes() {
-
         // Relocate Notes based on Date as Time Passes
         function updateDefaultProjectNotesByDate() {
             const todayProjectNotes = projectList[1].notes;
@@ -308,7 +307,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
             notesContainerElement.removeChild(note);
         })
 
-        // Iterate through ProjectNotes and Render
         for (let i = 0; i < projectList.length; i++) {
             // If Note Was Deleted & Existed in Default Project, Remove from Default Project
             for (let k = 0; k < projectList[i].notes.length; k++) {
@@ -321,14 +319,27 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                 }
             }
 
+            // Sort Notes By Date
+            function compareNotesByDate(note1, note2) {
+                // convert the Date Strings to Date Objects
+                var date1 = new Date(note1.date);
+                var date2 = new Date(note2.date);
 
+                // subtract the Dates and return the Result
+                return date1 - date2;
+            }
+            projectList[i].notes.sort(compareNotesByDate);
+
+
+            // Render Notes for Current Project
             if (projectList[i].id == currentProject) {
                 for (let j = 0; j < projectList[i].notes.length; j++) {
                     // Create Note
                     const note = document.createElement('div');
                     note.classList.add('note');
                     note.textContent = projectList[i].notes[j].task;
-                    notesContainerElement.appendChild(note);
+
+
 
                     // Update Calendar Method
                     function updateCalendar() {
@@ -502,11 +513,46 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         renderNotes();
                     }
 
+
+                    // Edit Note  Method
+
+                    function editNote() {
+                        const editNoteInput = document.createElement('input');
+                        const doneEditingButton = document.createElement('button');
+                        doneEditingButton.textContent = 'Done';
+                        doneEditingButton.addEventListener('click', () => {
+                            projectList[i].notes[j].task = editNoteInput.value;
+                            localStorage.setItem('projectList', JSON.stringify(projectList));
+                            renderNotes();
+                            editNoteInput.style.display = 'none';
+                            doneEditingButton.style.display = 'none';
+                            cancelEdit.style.display = 'none';
+                        })
+                        const cancelEdit = document.createElement('button');
+                        cancelEdit.textContent = 'Cancel';
+                        cancelEdit.addEventListener('click', () => {
+                            editNoteInput.style.display = 'none';
+                            doneEditingButton.style.display = 'none';
+                            cancelEdit.style.display = 'none';
+                        })
+
+                        notesContainerElement.appendChild(editNoteInput);
+                        notesContainerElement.appendChild(doneEditingButton);
+                        notesContainerElement.appendChild(cancelEdit);
+                    }
+
                     // Create Calendar Input
                     const noteCalendar = document.createElement('input');
                     noteCalendar.setAttribute('type', 'date');
                     noteCalendar.addEventListener('change', updateCalendar);
                     noteCalendar.value = projectList[i].notes[j].date;
+
+                    // Create Edit Button
+                    const editNoteButton = document.createElement('button');
+                    editNoteButton.textContent = 'Edit';
+                    editNoteButton.addEventListener('click', editNote);
+
+
                     // Create Completed Button
                     const noteCompletedButton = document.createElement('button');
                     noteCompletedButton.textContent = 'Completed';
@@ -518,6 +564,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     deleteNoteButton.addEventListener('click', deleteNote);
 
                     note.appendChild(noteCalendar);
+                    note.appendChild(editNoteButton);
                     note.appendChild(deleteNoteButton);
                     note.appendChild(noteCompletedButton);
                     notesContainerElement.appendChild(note);
@@ -570,10 +617,6 @@ BUGS
 - Input Stays on Display if No Note was Added
 
 TO-D0
-- Add All Notes to an All Projects Default Project - Iterate through all Projects & Push Notes, Re-Renders
-- Sort Notes in AllNotesDefaultProject by Date
-- Add Edit Note Action - RenderNotes Edit Button, Change Note Titles in All Default Projects
-- Click on Default Project Row to Switch instead of H1
 - Begin Thinking About Design Layout
 */
 
