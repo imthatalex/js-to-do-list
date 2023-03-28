@@ -180,6 +180,7 @@ function projectManager(projectsFormElement, projectsTitleInputElement, notesCon
 function noteManager(notesContainerElement, notesTaskInputElement, projectList, currentProject) {
     console.log('Note Manager Invoked');
 
+
     // Prevent Duplicate Buttons
     const duplicateAddNoteButtons = document.querySelectorAll('.addNoteButton');
     duplicateAddNoteButtons.forEach((addNoteButton) => {
@@ -198,13 +199,16 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
     addNoteButton.addEventListener('click', addNote);
     notesContainerElement.appendChild(addNoteButton);
 
+
+
     // Create Add Note Event
     function addNote(e) {
         e.preventDefault();
+        projectList[0].notes.push({ task: notesTaskInputElement.value, date: '', projectID: projectList.length, noteID: projectList[currentProject].notes.length });
         projectList[currentProject].notes.push({ task: notesTaskInputElement.value, date: '', projectID: projectList.length, noteID: projectList[currentProject].notes.length });
-        console.log(projectList[currentProject].notes);
-        renderNotes();
+        console.log(projectList[0].notes);
         localStorage.setItem('projectList', JSON.stringify(projectList));
+        renderNotes();
         notesTaskInputElement.value = '';
         notesTaskInputElement.style.display = 'none';
         addNoteButton.style.display = 'none';
@@ -217,6 +221,11 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
     addNewNoteButton.textContent = 'Create New Note';
     addNewNoteButton.addEventListener('click', createNewNote);
     notesContainerElement.appendChild(addNewNoteButton);
+
+    // Hide Create New Note Button if CurrentProject is a Default Project
+    if (projectList.slice(0, 5).some(project => project.id == currentProject || currentProject == undefined)) {
+        addNewNoteButton.style.display = 'none';
+    }
 
     // Create New Note Event
     function createNewNote(e) {
@@ -233,7 +242,7 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
         const defaultProjects = projectList.slice(0, 5);
         const personalProjects = projectList.slice(5);
 
-        // Remove Deleted Notes from Default Projects
+        // Remove Deleted Notes from Default Projects When a Personal Project is Deleted
         for (let j = 0; j < projectList.length; j++) {
             for (let k = 0; k < projectList[j].notes.length; k++) {
                 // Use Some as an Iterator
@@ -256,11 +265,51 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
             if (projectList[i].id == currentProject) {
                 console.log('Rendering Notes...');
                 for (let o = 0; o < projectList[i].notes.length; o++) {
+
                     // Create Note
                     const note = document.createElement('div');
                     note.classList.add('note');
                     note.textContent = projectList[currentProject].notes[o].task;
+
+                    // Create Calendar Input
+                    const noteCalendar = document.createElement('input');
+                    noteCalendar.setAttribute('type', 'date');
+                    // Update Calendar Event Listener
+                    noteCalendar.value = projectList[i].notes[o].date;
+
+                    // Delete Note Event
+                    function deleteNote() {
+                        console.log('Deleting Note...');
+                        for (let i = 0; i < projectList.length; i++) {
+                            for (let j = 0; j < projectList[i].notes.length; j++) {
+                                if (projectList[i].notes[j].noteID == projectList[i].notes[o].noteID && projectList[i].notes[j].projectID == projectList[i].notes[o].projectID) {
+                                    projectList[i].notes.splice(j, 1);
+                                    break;
+                                }
+                            }
+                        }
+                        localStorage.setItem('projectList', JSON.stringify(projectList));
+                        renderNotes();
+                    }
+
+                    // Create Completed Button
+                    const noteCompletedButton = document.createElement('button');
+                    noteCompletedButton.textContent = 'Completed';
+                    noteCompletedButton.addEventListener('click', deleteNote);
+
+
+                    // Create Delete Button
+                    const deleteNoteButton = document.createElement('button');
+                    deleteNoteButton.textContent = 'Delete';
+                    deleteNoteButton.addEventListener('click', deleteNote);
+
+
+                    // Append Components
+                    note.appendChild(noteCalendar);
+                    note.appendChild(deleteNoteButton);
+                    note.appendChild(noteCompletedButton);
                     notesContainerElement.appendChild(note);
+
                 }
                 console.log('Notes Rendered');
             }
