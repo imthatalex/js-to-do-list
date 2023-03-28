@@ -234,17 +234,16 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
         const personalProjects = projectList.slice(5);
 
         // Remove Deleted Notes from Default Projects
-        for (let j = 0; j < personalProjects.length; j++) {
-            for (let k = 0; k < personalProjects[j].notes.length; k++) {
-                if (defaultProjects.some(
-                    note => note.id !== personalProjects[j].notes[k].noteID &&
-                        note.projectID !== personalProjects[j].notes[k].projectID
-                )) {
-                    defaultProjects.splice(defaultProjects.notes.indexOf(personalProjects[j].notes[k]), 1);
+        for (let j = 0; j < projectList.length; j++) {
+            for (let k = 0; k < projectList.notes.length; k++) {
+                // Use Some as an Iterator
+                if (defaultProjects.some(project => project.notes.some(note => note.noteID == projectList[j].notes[k].noteID && note.projectID == projectList[j].notes[k].projectID)) &&
+                    !personalProjects.some(project => project.notes.some(note => note.noteID == projectList[j].notes[k].noteID && note.projectID == projectList[j].notes[k].projectID))
+                ) {
+                    projectList[j].notes.splice(projectList[j].notes.indexOf(projectList[j].notes[k], 1));
                 }
             }
         }
-
 
         // Prevent Duplicate Notes
         const duplicateNotes = document.querySelectorAll('.note');
