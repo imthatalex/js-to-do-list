@@ -105,6 +105,9 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
     function renderProjects() {
         console.log('Rendering Projects...');
 
+
+
+
         // prevent duplicate projects from being added
         const duplicateProjects = document.querySelectorAll('.projectRow');
         duplicateProjects.forEach((project) => {
@@ -113,6 +116,17 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
 
         // iterate through projects and render
         for (let i = 0; i < projectList.length; i++) {
+
+            /*
+                const firstProject = document.getElementById('firstProject');
+            window.onload = (event) => {
+                // Change to firstProject
+                firstProject.click();
+                console.log('clicked');
+            };
+
+            */
+
             // Add Delete Project Button
             const deleteProjectButton = document.createElement('button');
             deleteProjectButton.classList.add('deleteProjectButton');
@@ -147,7 +161,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
             function switchCurrentProject(e) {
                 e.preventDefault();
                 currentProject = projectList[i].id;
-                console.log('Current Project Switched to ', projectList[i]);
+                console.log('Current Project Switched to ', projectList[i].title);
                 noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject);
             }
             projectElement.addEventListener('click', switchCurrentProject);
@@ -164,12 +178,12 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
                     localStorage.setItem('projectList', JSON.stringify(projectList));
                     console.log('Project Deleted...');
                     console.log('Re-Rendering...');
+                    noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject);
                     // Search for Deleted Project, if Deleted Project was Currently Selected at Delete, Re-Direct User to firstProject Reference
                     let deletedProject = projectList.find(project => project == currentProject);
                     if (deletedProject == undefined) {
                         // Switch Current Project to firstProject
                         currentProject = projectList[0].id;
-                        const firstProject = document.getElementById('firstProject');
                         // Change to firstProject
                         firstProject.click();
                         console.log('Current Project Changed to ' + currentProject);
@@ -188,6 +202,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
 }
 
 function noteManager(notesContainerElement, notesTitleInputElement, projectList, currentProject) {
+    console.log(projectList);
     console.log('Note Manager Invoked');
     // Prevent Duplicate Buttons
     const duplicateDisplayInputButtons = document.querySelectorAll('.displayNoteInput');
@@ -306,9 +321,11 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                 if (defaultProjects.some(project => project.notes.some(note => note.task === projectList[i].notes[k].task)) &&
                     !projectList.slice(4).some(project => project.notes.some(note => note.task === projectList[i].notes[k].task))) {
                     projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[k]), 1);
+                    localStorage.setItem('projectList', JSON.stringify(projectList));
                     console.log('Note in Other, Deleted in Default');
                 }
             }
+
 
             if (projectList[i].id == currentProject) {
                 for (let j = 0; j < projectList[i].notes.length; j++) {
@@ -547,6 +564,7 @@ Notes
 - Invoke Delete Methods After Render/Set Methods
 
 BUGS
+- Deleting Projects Does Not Delete All Notes
 - Input Stays on Display if No Note was Added
 
 TO-D0
@@ -556,5 +574,4 @@ TO-D0
 - Click on Default Project Row to Switch instead of H1
 - Begin Thinking About Design Layout
 */
-
 
