@@ -235,7 +235,7 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
 
         // Remove Deleted Notes from Default Projects
         for (let j = 0; j < projectList.length; j++) {
-            for (let k = 0; k < projectList.notes.length; k++) {
+            for (let k = 0; k < projectList[j].notes.length; k++) {
                 // Use Some as an Iterator
                 if (defaultProjects.some(project => project.notes.some(note => note.noteID == projectList[j].notes[k].noteID && note.projectID == projectList[j].notes[k].projectID)) &&
                     !personalProjects.some(project => project.notes.some(note => note.noteID == projectList[j].notes[k].noteID && note.projectID == projectList[j].notes[k].projectID))
@@ -250,7 +250,6 @@ function noteManager(notesContainerElement, notesTaskInputElement, projectList, 
         duplicateNotes.forEach((note) => {
             notesContainerElement.removeChild(note);
         })
-
 
         // Render Notes for Current Projects
         for (let i = 0; i < projectList.length; i++) {

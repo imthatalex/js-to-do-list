@@ -8,20 +8,6 @@ body {
     grid-template-columns: 20% 80%;
 }
 
-.projectRow {
-    border: 1px solid orange;
-    width: 100%;
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: start;
-    align-items: center;
-}
-
-.projectRow button {
-    width: 100%;
-    height: 100%;
-}
-
 #sideMenu {
     border: 1px solid green;
 }
@@ -54,3 +40,14 @@ body {
     width: 200px;
 }
 
+.projectRow {
+    border: 1px solid orange;
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start;
+}
+
+.projectRow button {
+    width: 50%;
+}
