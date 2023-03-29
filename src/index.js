@@ -639,7 +639,7 @@ BUGS
 - Input Stays on Display if No Note was Added
 
 TO-D0
-- Add All Scheduled Notes to Scheduled Project
+- Read, Organize, & Comment
 - Sort Notes by Date
 - Add Priority to Notes
 - Begin Thinking About Design Layout
