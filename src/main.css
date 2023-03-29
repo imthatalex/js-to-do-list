@@ -1,23 +1,11 @@
 body {
     border: 1px solid red;
     background-color: #e5e5e5;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     margin: auto;
     display: grid;
     grid-template-columns: 20% 80%;
-}
-
-.projectRow {
-    border: 1px solid orange;
-    width: 100%;
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: start;
-}
-
-.projectRow button {
-    width: 50%;
 }
 
 #sideMenu {
@@ -52,3 +40,14 @@ body {
     width: 200px;
 }
 
+.projectRow {
+    border: 1px solid orange;
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start;
+}
+
+.projectRow button {
+    width: 50%;
+}
