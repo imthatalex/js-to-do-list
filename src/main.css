@@ -1,15 +1,20 @@
 body {
-    border: 1px solid red;
     background-color: #e5e5e5;
-    height: 100%;
+    height: 100vh;
     width: 100vw;
     margin: auto;
     display: grid;
     grid-template-columns: 20% 80%;
 }
 
+@media screen and (max-width: 910px) {
+    body {
+        grid-template-columns: auto;
+    }
+}
+
 #sideMenu {
-    border: 1px solid green;
+    height: 100%;
 }
 
 #sideMenu form {
@@ -18,30 +23,83 @@ body {
 }
 
 #sideMenu form input {
-    height: 100px;
+    height: 60px;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+    padding-left: 5px;
 }
 
 #sideMenu form button {
-    height: 100px;
-    cursor: pointer
+    height: 60px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
 }
 
 #notesContainer {
-    border: 1px solid blue;
+    height: 100%;
+    padding: 0 20px;
+    text-align: center;
 }
 
 #notesContainer input {
-    height: 100px;
-    width: 200px;
+    height: 60px;
+    width: 180px;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 0 10px;
+}
+
+#notesContainer input[type="date"] {
+    height: 60px;
+    width: 70%;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 0 10px;
 }
 
 #notesContainer button {
-    height: 100px;
+    height: 60px;
     width: 200px;
+    border: none;
+    border-radius: 10px;
+    background-color: #0B132B;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin: 10px;
+}
+
+#notesContainer button:hover {
+    cursor: pointer;
+}
+
+#notesContainer select {
+    height: 60px;
+    width: 80%;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.noteBttn {
+    height: 60px;
+    width: 80% !important;
+    border: none;
+    border-radius: 10px;
+    background-color: #0B132B;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin: 10px;
 }
 
 .projectRow {
-    border: 1px solid orange;
     width: 100%;
     display: flex;
     flex-direction: row-reverse;
@@ -49,5 +107,52 @@ body {
 }
 
 .projectRow button {
-    width: 50%;
+    width: 100%;
 }
+
+.default {
+    background-color: #0B132B;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 500;
+}
+
+.note {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 10px auto !important;
+    border-radius: 10px;
+    padding-left: 20px;
+    background-color: #C9EDDC;
+}
+
+.noteText {
+    background-color: #3F88C5;
+    color: #FDFFFF;
+    border: none;
+    border-radius: 10px;
+    min-height: 40px;
+    max-height: 100%;
+    padding: 10px;
+    display: grid;
+    align-items: center;
+    width: 70%;
+}
+
+@media screen and (max-width: 800px){
+    #notesContainer input[type="date"] {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 500px){
+    .note {
+        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+

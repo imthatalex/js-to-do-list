@@ -151,7 +151,8 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
                 projectRow.appendChild(deleteProjectButton);
             }
             else {
-                projectElement = document.createElement('h1');
+                projectElement = document.createElement('button');
+                projectElement.classList.add('default');
             }
             projectElement.classList.add('project');
             if (projectList[i].id == projectList[0].id) {
@@ -231,14 +232,6 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     notesContainerElement.appendChild(displayNoteInputButton);
 
 
-    // Create Cancel Button
-    const cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Cancel';
-    cancelButton.style.display = 'none';
-    cancelButton.classList.add('cancelButton');
-    cancelButton.addEventListener('click', cancelNote);
-    notesContainerElement.appendChild(cancelButton);
-
     // Cancel Note Method
     function cancelNote() {
         notesTitleInputElement.style.display = 'none';
@@ -254,6 +247,15 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     addNewNoteButton.addEventListener('click', addNotes);
     addNewNoteButton.style.display = 'none';
     notesContainerElement.appendChild(addNewNoteButton);
+
+
+    // Create Cancel Button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.style.display = 'none';
+    cancelButton.classList.add('cancelButton');
+    cancelButton.addEventListener('click', cancelNote);
+    notesContainerElement.appendChild(cancelButton);
 
     // Add New Note Method
     function addNotes() {
@@ -415,10 +417,16 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
             // Render Notes for Current Project
             if (projectList[i].id == currentProject) {
                 for (let j = 0; j < projectList[i].notes.length; j++) {
+
+
                     // Create Note
                     const note = document.createElement('div');
                     note.classList.add('note');
-                    note.textContent = projectList[i].notes[j].task;
+
+                    const noteText = document.createElement('div');
+                    noteText.classList.add('noteText');
+                    noteText.textContent = projectList[i].notes[j].task;
+                    note.appendChild(noteText);
                     note.style.backgroundColor = projectList[i].notes[j].priority;
 
                     // Update Calendar Method
@@ -625,15 +633,15 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     function setPriority(e) {
                         console.log('Setting Priority');
                         if (e.target.value == 'High') {
-                            projectList[i].notes[j].priority = 'Red';
+                            projectList[i].notes[j].priority = '#B10F2E';
                             renderNotes();
                         }
                         else if (e.target.value == 'Medium') {
-                            projectList[i].notes[j].priority = 'Green';
+                            projectList[i].notes[j].priority = '#5FDD9D';
                             renderNotes();
                         }
                         else if (e.target.value == 'Low') {
-                            projectList[i].notes[j].priority = 'Blue';
+                            projectList[i].notes[j].priority = '#256EFF';
                             renderNotes();
                         }
                     }
@@ -672,24 +680,27 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     // Create Edit Button
                     const editNoteButton = document.createElement('button');
                     editNoteButton.textContent = 'Edit';
+                    editNoteButton.classList.add('noteBttn');
                     editNoteButton.addEventListener('click', editNote);
 
 
                     // Create Completed Button
                     const noteCompletedButton = document.createElement('button');
-                    noteCompletedButton.textContent = 'Completed';
+                    noteCompletedButton.textContent = 'O';
+                    noteCompletedButton.classList.add('noteBttn');
                     noteCompletedButton.addEventListener('click', deleteNote);
 
                     // Create Delete Button
                     const deleteNoteButton = document.createElement('button');
-                    deleteNoteButton.textContent = 'Delete';
+                    deleteNoteButton.classList.add('noteBttn');
+                    deleteNoteButton.textContent = 'X';
                     deleteNoteButton.addEventListener('click', deleteNote);
 
                     note.appendChild(noteCalendar);
+                    note.appendChild(prioritySelect);
                     note.appendChild(editNoteButton);
                     note.appendChild(deleteNoteButton);
                     note.appendChild(noteCompletedButton);
-                    note.appendChild(prioritySelect);
                     notesContainerElement.appendChild(note);
                 }
             }
@@ -743,6 +754,12 @@ Notes
 BUGS
 
 TO-D0
-- Begin Thinking About Design Layout
+Design SideMenu
+- Reduce Font Size for Titles
+- Increase Padding to Cover Project Row for more Accessibility
+- Reduce Padding for Buttons, Add BKGColor, Change Font Size
+
+
+- Add Cancel Button to Create New Projects
 */
 
