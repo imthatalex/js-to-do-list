@@ -50,10 +50,9 @@ function projectsForm() {
     notesContainerElement.appendChild(notesFormElement);
     document.body.appendChild(sideMenuElement);
     document.body.appendChild(notesContainerElement);
-
     console.log('Components Rendered');
-    console.log('Project Manager Invoked');
 
+    console.log('Project Manager Invoked');
     projectManager(projectsFormElement, projectsTitleInputElement, notesContainerElement, notesTitleInputElement, displayProjectInputButtonElement);
 })();
 
@@ -89,6 +88,20 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
     }
     displayProjectInputButtonElement.addEventListener('click', displayInput);
 
+
+    // Cancel Method
+    function cancelProject() {
+        projectsInputTitleElement.style.display = 'none';
+    }
+
+    // Cancel Button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.style.display = 'none';
+    cancelButton.addEventListener('click', cancelProject);
+    projectsFormElement.appendChild(cancelButton);
+
+
     // prevents projectList from being set on re-render to default values
     let projectList = JSON.parse(localStorage.getItem('projectList'));
     // if projectList already exists do nothing else render initial values
@@ -112,7 +125,6 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
         console.log('Rendering Projects...');
 
 
-
         // prevent duplicate projects from being added
         const duplicateProjects = document.querySelectorAll('.projectRow');
         duplicateProjects.forEach((project) => {
@@ -121,17 +133,6 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
 
         // iterate through projects and render
         for (let i = 0; i < projectList.length; i++) {
-
-            /*
-                const firstProject = document.getElementById('firstProject');
-            window.onload = (event) => {
-                // Change to firstProject
-                firstProject.click();
-                console.log('clicked');
-            };
-
-            */
-
             // Add Delete Project Button
             const deleteProjectButton = document.createElement('button');
             deleteProjectButton.classList.add('deleteProjectButton');
@@ -218,12 +219,33 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     duplicateNewNoteButtons.forEach((newNoteButton) => {
         notesContainerElement.removeChild(newNoteButton);
     })
+    const duplicateCancelButton = document.querySelectorAll('.cancelButton');
+    duplicateCancelButton.forEach((cancelButton) => {
+        notesContainerElement.removeChild(cancelButton);
+    })
 
     // Create Display Note Button
     const displayNoteInputButton = document.createElement('button');
     displayNoteInputButton.textContent = 'Add New Note';
     displayNoteInputButton.classList.add('displayNoteInput');
     notesContainerElement.appendChild(displayNoteInputButton);
+
+
+    // Create Cancel Button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.style.display = 'none';
+    cancelButton.classList.add('cancelButton');
+    cancelButton.addEventListener('click', cancelNote);
+    notesContainerElement.appendChild(cancelButton);
+
+    // Cancel Note Method
+    function cancelNote() {
+        notesTitleInputElement.style.display = 'none';
+        cancelButton.style.display = 'none';
+        addNewNoteButton.style.display = 'none';
+        displayNoteInputButton.style.display = 'block';
+    }
 
     // Create Add New Note Button
     const addNewNoteButton = document.createElement('button');
@@ -237,12 +259,13 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     function addNotes() {
         notesTitleInputElement.style.display = 'none';
         addNewNoteButton.style.display = 'none';
+        cancelButton.style.display = 'none';
         displayNoteInputButton.style.display = 'block';
         console.log('Adding Note...');
         for (let i = 0; i < projectList.length; i++) {
             if (projectList[i].id == currentProject) {
                 // changed pushed value to object literal
-                projectList[i].notes.push({ task: notesTitleInputElement.value, date: '', projectNoteID: projectList[i].id, noteID: projectList[i].notes.length });
+                projectList[i].notes.push({ task: notesTitleInputElement.value, date: '', projectNoteID: projectList[i].id, noteID: projectList[i].notes.length, priority: '' });
             }
         }
         localStorage.setItem('projectList', JSON.stringify(projectList));
@@ -250,11 +273,19 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
         renderNotes();
     }
 
+    // Remove Input on Current Project Change if No Note was Added
+    let previousProject = currentProject - 1;
+    console.log(previousProject, currentProject);
+    if (previousProject !== currentProject && notesTitleInputElement.style.display == 'block') {
+        notesTitleInputElement.style.display = 'none';
+    }
+
     // Display Input Method
     function displayInput(e) {
         e.preventDefault();
         notesTitleInputElement.style.display = 'block';
         addNewNoteButton.style.display = 'block';
+        cancelButton.style.display = 'block';
         displayNoteInputButton.style.display = 'none';
     }
     displayNoteInputButton.addEventListener('click', displayInput);
@@ -266,6 +297,12 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
     // Render Notes Method
     function renderNotes() {
+        // Sort Notes by Date
+        projectList.forEach(project => {
+            console.log('Sorting Notes..');
+            project.notes.sort((noteA, noteB) => Date.parse(noteA.date) - Date.parse(noteB.date));
+        });
+
         // Relocate Notes based on Date as Time Passes
         function updateDefaultProjectNotesByDate() {
             const todayProjectNotes = projectList[1].notes;
@@ -317,10 +354,9 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
             notesContainerElement.removeChild(note);
         })
 
-        console.log('BATTLE MERCY RAAAA');
         // Push Notes to Scheduled Project
         function updateProjectList(projectList) {
-            console.log('BATTLE MERCY RAAAA!!');
+
             // Create an empty notes array for the "Scheduled" project (id: 0)
             const scheduledNotes = [];
 
@@ -331,23 +367,28 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
 
                 // Iterate through each note in the project's notes array
                 for (let j = 0; j < project.notes.length; j++) {
-                    // Get the note object
+                    // Get the note object via reference point
                     const note = project.notes[j];
 
                     // Check if the note already exists in the scheduledNotes array
-                    const scheduledNoteIndex = scheduledNotes.findIndex(n => n.task === note.task && n.date === note.date);
+                    const scheduledNoteIndex = scheduledNotes.findIndex(n => n.projectNoteID === note.projectNoteID && n.noteID === note.noteID);
 
-                    // If the note already exists, update it
+                    // If the note already exists, update it and add the duplicate
                     if (scheduledNoteIndex !== -1) {
+                        // Update the existing note object
                         Object.assign(scheduledNotes[scheduledNoteIndex], note);
+                        // Add the duplicate note
+                        scheduledNotes.push(note);
                     }
                     // If the note doesn't exist, add it
                     else {
                         scheduledNotes.push(note);
                     }
                 }
-            }
 
+                // Sort the project's notes array by date in ascending order
+                scheduledNotes.sort((noteA, noteB) => Date.parse(noteA.date) - Date.parse(noteB.date));
+            }
 
             // Update the notes array of the "Scheduled" project with the updated notes array
             const scheduledProjectIndex = projectList.findIndex(p => p.id === 0);
@@ -364,7 +405,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                 const defaultProjects = projectList.slice(0, 5);
                 // If Note Was Deleted & Existed in Default Project, Remove from Default Project
                 if (defaultProjects.some(project => project.notes.some(note => note.task === projectList[i].notes[k].task)) &&
-                    !projectList.slice(5).some(project => project.notes.some(note => note.task === projectList[i].notes[k].task))) {
+                    !projectList.slice(5).some(project => project.notes.some(note => note.noteID === projectList[i].notes[k].noteID && note.projectNoteID === projectList[i].notes[k].projectNoteID))) {
                     projectList[i].notes.splice(projectList[i].notes.indexOf(projectList[i].notes[k]), 1);
                     localStorage.setItem('projectList', JSON.stringify(projectList));
                     console.log('Note in Other, Deleted in Default');
@@ -378,6 +419,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     const note = document.createElement('div');
                     note.classList.add('note');
                     note.textContent = projectList[i].notes[j].task;
+                    note.style.backgroundColor = projectList[i].notes[j].priority;
 
                     // Update Calendar Method
                     function updateCalendar() {
@@ -395,12 +437,17 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                             const notes = otherProjects[t].notes;
                             for (let f = 0; f < notes.length; f++) {
                                 console.log('Changing Note Date in Other Project...');
-                                if (notes[f].projectNoteID === previousNote.projectNoteID && notes[f].noteID === previousNote.noteID && notes[f].date !== noteCalendar.value) {
+                                if (notes[f] === previousNote) {
                                     notes[f].date = noteCalendar.value;
                                     console.log('Note Changed in Other Project');
+                                    console.log('Note F: ', notes[f].projectNoteID);
+                                    console.log('Prev Note: ', previousNote.projectNoteID);
+
                                 }
                                 else {
-                                    console.log('Note IDs Did Not Match when Replacing Other Note Dates')
+                                    console.log('Note IDs Did Not Match when Replacing Other Note Dates');
+                                    console.log('Note F: ', notes[f].projectNoteID);
+                                    console.log('Prev Note: ', previousNote.projectNoteID);
                                 }
                             }
                         }
@@ -495,7 +542,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                             console.log('Deleting Previous Note...');
                             const defaultProjects = projectList.slice(1, 5);
                             for (let g = 0; g < defaultProjects.length; g++) {
-                                if (defaultProjects[g].notes.some(note => note === previousNote)) {
+                                if (defaultProjects[g].notes.some(note => note.noteID === previousNote.noteID && note.projectNoteID === previousNote.projectNoteID)) {
                                     defaultProjects[g].notes.splice(defaultProjects[g].notes.indexOf(previousNote), 1);
                                     break;
                                 }
@@ -574,11 +621,53 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                         notesContainerElement.appendChild(cancelEdit);
                     }
 
+                    // Priority Method
+                    function setPriority(e) {
+                        console.log('Setting Priority');
+                        if (e.target.value == 'High') {
+                            projectList[i].notes[j].priority = 'Red';
+                            renderNotes();
+                        }
+                        else if (e.target.value == 'Medium') {
+                            projectList[i].notes[j].priority = 'Green';
+                            renderNotes();
+                        }
+                        else if (e.target.value == 'Low') {
+                            projectList[i].notes[j].priority = 'Blue';
+                            renderNotes();
+                        }
+                    }
+
+
+                    // Create Set Priority Select
+                    const prioritySelect = document.createElement('select');
+                    prioritySelect.addEventListener('change', setPriority);
+
+                    // Create Priority Options
+                    const defaultOption = document.createElement('option');
+                    defaultOption.textContent = 'Set Priority';
+                    defaultOption.selected = true;
+
+                    const highPriority = document.createElement('option');
+                    highPriority.textContent = 'High';
+
+                    const mediumPriority = document.createElement('option');
+                    mediumPriority.textContent = 'Medium';
+
+                    const lowPriority = document.createElement('option');
+                    lowPriority.textContent = 'Low';
+
+                    prioritySelect.appendChild(defaultOption);
+                    prioritySelect.appendChild(highPriority);
+                    prioritySelect.appendChild(mediumPriority);
+                    prioritySelect.appendChild(lowPriority);
+
                     // Create Calendar Input
                     const noteCalendar = document.createElement('input');
                     noteCalendar.setAttribute('type', 'date');
                     noteCalendar.addEventListener('change', updateCalendar);
                     noteCalendar.value = projectList[i].notes[j].date;
+
 
                     // Create Edit Button
                     const editNoteButton = document.createElement('button');
@@ -600,6 +689,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     note.appendChild(editNoteButton);
                     note.appendChild(deleteNoteButton);
                     note.appendChild(noteCompletedButton);
+                    note.appendChild(prioritySelect);
                     notesContainerElement.appendChild(note);
                 }
             }
@@ -632,11 +722,14 @@ T.I.L
 - Using JSON to Stringify Objects & a Parser to Convert String Data back into an Object
 - Using LocalStorage to Store Data Locally
 - Update Locally Stored Data
-- Some Array Method can Help Access Nested Properties to test Conditional Statements
+- Array.Some() Method can Help Access Nested Properties to test Conditional Statements
 - Using an Array Length as an ID Reference Point
 - Creating an Index for Splice Array Methods using the index of a forLoop as a Reference Point
 - IndexOf Method returns -1 when Element Not Found; Can Cause Unintended Behavior; Example : Removing Last Element from within a Splice Method
 - When Removing Elements using a forLoop it's Best Practice to Decrease the Iterator not Increase
+- Using Object.Assign() to Update Existing Object Properties or Add New Ones
+- Using Array.Sort() to Sort Elements in an Array based on a Condition
+- Using FindIndex to Test Whether an Element Exists and Fetch it's Index
 
 Notes
 - Duplicate Function Calls : Check Inner Functions for Multiple Invocations
@@ -644,15 +737,12 @@ Notes
 - Could Have Added Type to Project : Default or Personal
 - Slice Method - Returns a Shallow Copy of an Array (Does Not Mutate)
 - Splice Method - Mutates Original Array (Deleting or Replacing Elements)
-- Invoke Delete Methods After Render/Set Methods
+- Invoke Render Manipulation Methods After Render/Set Methods
+- Create the Layout for your Object prior to Applying Logic
 
 BUGS
-- Input Stays on Display if No Note was Added
 
 TO-D0
-- Read, Organize, & Comment
-- Sort Notes by Date
-- Add Priority to Notes
 - Begin Thinking About Design Layout
 */
 
