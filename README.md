@@ -1,16 +1,19 @@
-Reminder:
-- S.O.L.I.D Principles
 
-Rules:
+
+# Web Application : TO-DO List
+
+## Assignment by The Odin Project
+
+Task :
 1. Use Objects : Factories or Classes/Constructors
-2. Note Properties : Title, Description, Due Date, Priority
+2. Note Properties to Include : Title, Description, Due Date, Priority
 3. Ability to Create Seperate Projects : Default Project, Create Custom Project
-4. Separate Application Logic : Modular
-5. App Functionalty : View All Projects, View All Notes (Title & Description Only), Change Color of Background to Establish Priority, Edit Note, Delete Note
-6. npm i date-fns
+4. Separate Application Logic : Make Code Modular
+5. App Functionalty : View All Projects, View All Notes, Change Color of Background to Establish Priority, Edit Note, Delete Note
+6. Sort Notes by Date
 7. Use Web Storage API to Save Projects & Notes to Local Storage
 
-W.I.L
+What I Learned :
 - Composition over Inheritance : Use Smaller Functions (Code Blocks) to Create more Complex Behavior without having to write all the Code in one Large Function.
 - Single Responsibility Principle : Similar Responsibilities with Only One Reason to Change
 - How to Destructure Properties returned from Factory Functions
@@ -28,3 +31,5 @@ W.I.L
 - Using Object.Assign() to Update Existing Object Properties or Add New Ones
 - Using Array.Sort() to Sort Elements in an Array based on a Condition
 - Using FindIndex to Test Whether an Element Exists and Fetch it's Index
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/39d786f4-b883-41dd-9b35-7b352355ed53/deploy-status)](https://app.netlify.com/sites/lovely-griffin-70c1f3/deploys)
