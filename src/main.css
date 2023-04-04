@@ -5,16 +5,12 @@ body {
     margin: auto;
     display: grid;
     grid-template-columns: 20% 80%;
-}
-
-@media screen and (max-width: 910px) {
-    body {
-        grid-template-columns: auto;
-    }
+    align-items: center;
 }
 
 #sideMenu {
     height: 100%;
+    padding: 89px 0 30px 0;
 }
 
 #sideMenu form {
@@ -40,8 +36,7 @@ body {
 
 #notesContainer {
     height: 100%;
-    padding: 0 20px;
-    text-align: center;
+    padding: 60px 10px 0 10px;
 }
 
 #notesContainer input {
@@ -85,6 +80,18 @@ body {
     border: none;
     border-radius: 10px;
     margin: 10px;
+}
+
+#footer {
+    text-align: center;
+    height: 100%;
+    width: 100vw;
+    display: grid;
+    align-items: center;
+    font-weight: 500;
+    font-size: 1.25rem;
+    background-color: #CDCDCD;
+    padding: 15px 0;
 }
 
 .noteBttn {
@@ -142,9 +149,51 @@ body {
     width: 70%;
 }
 
+.waterMark {
+    margin: auto;
+    font-size: 2rem;
+    text-align: center;
+    margin-top: 25%;
+    font-weight: 500;
+    color: #6A706E;
+}
+
+
+@media screen and (max-width: 1000px){
+    #footer {
+        padding: 0;
+    }
+}
+
+@media screen and (max-width: 910px) {
+    body {
+        grid-template-columns: auto;
+    }
+
+    #notesContainer {
+        border: 1px solid red;
+        height: 100%;
+    }
+
+    .waterMark {
+        margin-top: 0;
+        padding-bottom: 50px;
+    }
+
+    #footer {
+        position: fixed;
+        bottom: 0;
+        height: 30px;
+    }
+
+}
+
 @media screen and (max-width: 800px){
     #notesContainer input[type="date"] {
         width: 60%;
+    }
+    #notesContainer {
+        text-align: center;
     }
 }
 
@@ -154,5 +203,6 @@ body {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
 
 

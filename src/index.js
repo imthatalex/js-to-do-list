@@ -35,6 +35,17 @@ function projectsForm() {
     return { form, titleInput, displayInputButton }
 }
 
+
+function footer() {
+    const footer = document.createElement('div');
+    footer.setAttribute('id', 'footer');
+    const desc = document.createElement('div');
+    desc.setAttribute('id', 'descFooter');
+    desc.textContent = 'Made by imthatalex';
+    footer.appendChild(desc);
+    return { footer };
+}
+
 // render components
 (function renderComponents() {
     console.log('Rendering Components...');
@@ -44,12 +55,14 @@ function projectsForm() {
     const { form: notesFormElement, titleInput: notesTitleInputElement } = notesForm();
     const { sideMenu: sideMenuElement } = sideMenu();
     const { form: projectsFormElement, titleInput: projectsTitleInputElement, displayInputButton: displayProjectInputButtonElement } = projectsForm();
+    const { footer: footerElement } = footer();
 
     // append container and child components to body
     sideMenuElement.appendChild(projectsFormElement);
     notesContainerElement.appendChild(notesFormElement);
     document.body.appendChild(sideMenuElement);
     document.body.appendChild(notesContainerElement);
+    document.body.appendChild(footerElement);
     console.log('Components Rendered');
 
     console.log('Project Manager Invoked');
@@ -69,6 +82,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
         e.preventDefault();
         projectsInputTitleElement.style.display = 'none';
         addNewProjectButton.style.display = 'none';
+        cancelButton.style.display = 'none';
         displayProjectInputButtonElement.style.display = 'block';
         console.log('Adding New Project...');
         projectList.push({ title: projectsInputTitleElement.value, id: projectList.length, notes: [] });
@@ -84,6 +98,7 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
         e.preventDefault();
         projectsInputTitleElement.style.display = 'block';
         addNewProjectButton.style.display = 'block';
+        cancelButton.style.display = 'block';
         displayProjectInputButtonElement.style.display = 'none';
     }
     displayProjectInputButtonElement.addEventListener('click', displayInput);
@@ -92,6 +107,8 @@ function projectManager(projectsFormElement, projectsInputTitleElement, notesCon
     // Cancel Method
     function cancelProject() {
         projectsInputTitleElement.style.display = 'none';
+        cancelButton.style.display = 'none';
+        projectsInputTitleElement.value = '';
     }
 
     // Cancel Button
@@ -224,6 +241,10 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     duplicateCancelButton.forEach((cancelButton) => {
         notesContainerElement.removeChild(cancelButton);
     })
+    const duplicateWaterMarks = document.querySelectorAll('.waterMark');
+    duplicateWaterMarks.forEach((waterMark) => {
+        notesContainerElement.removeChild(waterMark);
+    })
 
     // Create Display Note Button
     const displayNoteInputButton = document.createElement('button');
@@ -232,12 +253,21 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     notesContainerElement.appendChild(displayNoteInputButton);
 
 
+    // WaterMark
+    const waterMark = document.createElement('div');
+    waterMark.textContent = 'No Notes in ' + projectList[currentProject].title;
+    waterMark.classList.add('waterMark');
+    waterMark.style.display = 'none';
+    notesContainerElement.appendChild(waterMark);
+
+
     // Cancel Note Method
     function cancelNote() {
         notesTitleInputElement.style.display = 'none';
         cancelButton.style.display = 'none';
         addNewNoteButton.style.display = 'none';
         displayNoteInputButton.style.display = 'block';
+        notesTitleInputElement.value = '';
     }
 
     // Create Add New Note Button
@@ -272,6 +302,7 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
         }
         localStorage.setItem('projectList', JSON.stringify(projectList));
         console.log('Note Added');
+        notesTitleInputElement.value = '';
         renderNotes();
     }
 
@@ -293,8 +324,23 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
     displayNoteInputButton.addEventListener('click', displayInput);
 
     // Hide Display Note Button if CurrentProject is a Default Project
-    if (projectList.slice(0, 5).some(project => project.id == currentProject || currentProject == undefined)) {
-        displayNoteInputButton.style.display = 'none';
+    projectList.slice(0, 5).some(project => {
+        if (project.id == currentProject || currentProject == undefined) {
+            displayNoteInputButton.style.display = 'none';
+        }
+    })
+
+    // Display WaterMark if Default Project Notes Length is 0
+    const defaultProjects = projectList.slice(0, 5);
+    for (let g = 0; g < defaultProjects.length; g++) {
+        if (defaultProjects[g].id == currentProject) {
+            if (defaultProjects[g].notes.length == 0) {
+                waterMark.style.display = 'block';
+            }
+            else {
+                waterMark.style.display = 'none';
+            }
+        }
     }
 
     // Render Notes Method
@@ -413,6 +459,10 @@ function noteManager(notesContainerElement, notesTitleInputElement, projectList,
                     console.log('Note in Other, Deleted in Default');
                 }
             }
+
+
+
+
 
             // Render Notes for Current Project
             if (projectList[i].id == currentProject) {
@@ -723,7 +773,7 @@ Rules:
 6. npm i date-fns
 7. Use Web Storage API to Save Projects & Notes to Local Storage
 
-T.I.L
+W.I.L
 - Composition over Inheritance : Use Smaller Functions (Code Blocks) to Create more Complex Behavior without having to write all the Code in one Large Function.
 - Single Responsibility Principle : Similar Responsibilities with Only One Reason to Change
 - How to Destructure Properties returned from Factory Functions
@@ -754,12 +804,5 @@ Notes
 BUGS
 
 TO-D0
-Design SideMenu
-- Reduce Font Size for Titles
-- Increase Padding to Cover Project Row for more Accessibility
-- Reduce Padding for Buttons, Add BKGColor, Change Font Size
-
-
-- Add Cancel Button to Create New Projects
 */
 
